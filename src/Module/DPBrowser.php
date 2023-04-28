@@ -95,6 +95,15 @@ class DPBrowser extends WebDriver
 		$this->wait(1);
 	}
 
+	public function closeSidebar()
+	{
+		if($this->executeJS('return window.getComputedStyle(document.querySelector("#sidebarmenu .sidebar-item-title"), null).display !== "none"')) {
+			$this->click('#menu-collapse');
+			$this->waitForElementNotVisible('#sidebarmenu .sidebar-item-title');
+			$this->wait(0.3);
+		}
+	}
+
 	public function clickDPToolbarButton($button)
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
