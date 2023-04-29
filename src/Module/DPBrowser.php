@@ -73,6 +73,7 @@ class DPBrowser extends WebDriver
 	{
 		$this->executeJS('try { sessionStorage.clear();localStorage.clear(); } catch(error) {}');
 		parent::amOnPage($link);
+		$this->executeJS('window.scrollTo(0, 0);');
 
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
@@ -98,6 +99,7 @@ class DPBrowser extends WebDriver
 	public function closeSidebar()
 	{
 		if($this->executeJS('return window.getComputedStyle(document.querySelector("#sidebarmenu .sidebar-item-title"), null).display !== "none"')) {
+			$this->waitForElementClickable('#menu-collapse');
 			$this->click('#menu-collapse');
 			$this->waitForElementNotVisible('#sidebarmenu .sidebar-item-title');
 			$this->wait(0.3);
@@ -254,7 +256,7 @@ class DPBrowser extends WebDriver
 	public function searchForItem($name = null)
 	{
 		if ($name) {
-			$this->fillField(['id' => "filter_search"], $name);
+			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
 
 			return;
