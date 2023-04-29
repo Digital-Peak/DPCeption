@@ -36,6 +36,12 @@ class DPBrowser extends WebDriver
 	public function getConfiguration($element = null, $moduleName = null)
 	{
 		$config = $moduleName ? $this->getModule($moduleName)->_getConfig() : $this->config;
+
+		// When no module is given and the array key doesn't exist, fallback to the current module configuration
+		if ($element && !$moduleName && !array_key_exists($element, $config)) {
+			$moduleName = __CLASS__;
+		}
+
 		return !$element ? $config : $config[$element];
 	}
 
@@ -73,8 +79,6 @@ class DPBrowser extends WebDriver
 	{
 		$this->executeJS('try { sessionStorage.clear();localStorage.clear(); } catch(error) {}');
 		parent::amOnPage($link);
-		$this->executeJS('window.scrollTo(0, 0);');
-
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
 		if ($checkForErrors && strpos($link, 'com_dp')) {
