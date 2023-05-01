@@ -216,6 +216,7 @@ class DPBrowser extends WebDriver
 		$this->amOnPage('/index.php?option=com_users&view=login');
 		$this->fillField('#username', $user);
 		$this->fillField('#password', $password);
+		$this->click('#remember');
 		$this->click('.com-users-login__submit button, #content .login button');
 
 		$this->waitForElement('.profile');
