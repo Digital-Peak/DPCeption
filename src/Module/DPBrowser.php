@@ -8,6 +8,9 @@
 namespace DigitalPeak\Module;
 
 use Codeception\Module\WebDriver;
+use Codeception\Test\Descriptor;
+use Codeception\TestInterface;
+use Exception;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
@@ -275,6 +278,8 @@ class DPBrowser extends WebDriver
 		}
 
 		if(!is_array($logs)) {
+			$this->debug($logs);
+			codecept_debug($logs);
 			return;
 		}
 
@@ -295,6 +300,41 @@ class DPBrowser extends WebDriver
 			}
 
 			$this->assertNotEquals('SEVERE', $log['level'], 'Some error in JavaScript: ' . json_encode($log));
+		}
+	}
+
+	public function _failed(TestInterface $test, $fail)
+	{
+		parent::_failed($test, $fail);
+
+		if(!$this->config['log_js_errors']) {
+			return;
+		}
+
+		if ($this->webDriver === null) {
+			$this->debug('WebDriver::savejserrors method has been called when webDriver is not set');
+			return;
+		}
+
+		$filename  = preg_replace('~[^a-zA-Z0-9\x80-\xff]~', '.', Descriptor::getTestSignatureUnique($test));
+		$outputDir = codecept_output_dir();
+		$filename  = $outputDir . mb_strcut($filename, 0, 244, 'utf-8') . '.fail.txt';
+
+		try {
+			$logEntries = $this->webDriver->manage()->getLog('browser');
+			if(!is_array($logEntries)) {
+				return;
+			}
+
+			$logEntries = array_slice($logEntries, -$this->config['debug_log_entries']);
+			if (empty($logEntries)) {
+				return;
+			}
+
+			file_put_contents($filename, $this->formatLogEntries($logEntries));
+			$test->getMetadata()->addReport('txt', $filename);
+		} catch (Exception $e) {
+			$this->debug('Unable to retrieve browser logs from Selenium : ' . $e->getMessage());
 		}
 	}
 }
