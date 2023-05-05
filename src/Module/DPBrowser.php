@@ -7,6 +7,7 @@
 
 namespace DigitalPeak\Module;
 
+use Closure;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverKeys;
@@ -296,5 +297,35 @@ class DPBrowser extends WebDriver
 
 			$this->assertNotEquals('SEVERE', $log['level'], 'Some error in JavaScript: ' . json_encode($log));
 		}
+	}
+
+	public function waitForElementChange($element, Closure $callback, int $timeout = -1): void
+	{
+		parent::waitForElementChange($element, $callback, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
+	}
+
+	public function waitForElement($element, int $timeout = -1): void
+	{
+		parent::waitForElement($element, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
+	}
+
+	public function waitForElementVisible($element, int $timeout = -1): void
+	{
+		parent::waitForElementVisible($element, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
+	}
+
+	public function waitForElementNotVisible($element, int $timeout = -1): void
+	{
+		parent::waitForElementNotVisible($element, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
+	}
+
+	public function waitForElementClickable($element, int $timeout = -1): void
+	{
+		parent::waitForElementClickable($element, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
+	}
+
+	public function waitForText(string $text, int $timeout = -1, $selector = null): void
+	{
+		parent::waitForText($text, $timeout === -1 ? $this->_getConfig('timeout') : $timeout, $selector);
 	}
 }
