@@ -115,12 +115,17 @@ class DPBrowser extends WebDriver
 		$this->wait(0.5);
 	}
 
-	public function clickJoomlaToolbarButton($button)
+	public function clickJoomlaToolbarButton($button, $acceptPopup = false)
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
 		// Wait is needed here as on J4 buttons work after a certain time
 		$this->wait(0.5);
 		$this->click($button);
+
+		if ($acceptPopup) {
+			$this->acceptPopup();
+		}
+
 		$this->waitForJs('return document.readyState == "complete"', 10);
 		$this->wait(0.5);
 	}
