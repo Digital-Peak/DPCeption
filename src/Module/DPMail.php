@@ -8,7 +8,7 @@
 namespace DigitalPeak\Module;
 
 use Codeception\Module;
-use GuzzleHttp\Client;
+use DigitalPeak\ThinHTTP;
 
 class DPMail extends Module
 {
@@ -16,116 +16,108 @@ class DPMail extends Module
 
 	public function clearEmails()
 	{
-		(new Client())->delete($this->_getConfig('url') . '/messages');
+		(new ThinHTTP())->delete($this->_getConfig('url') . '/messages');
 	}
 
 	public function seeNumberOfMails($count)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
+		$mails = $this->getMails();
+
 		$this->assertEquals($count, count($mails), print_r($mails, true));
 	}
 
 	public function seeInEmailSubjects($text)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$subjects    = [];
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
+		$subjects = [];
+		foreach ($this->getMails() as $email) {
 			$subjects[] = $email->subject;
 		}
+
 		$this->assertContains($text, $subjects, print_r($subjects, true));
 	}
 
 	public function seeInEmails($text)
 	{
-		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
-		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
-			$mailContents .= $mailcatcher->get('/messages/' . $email->id . '.html')->getBody();
+		foreach ($this->getMails() as $email) {
+			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
+
 		$this->assertStringContainsStringIgnoringCase($text, $mailContents, $mailContents);
 	}
 
 	public function dontSeeInEmails($text)
 	{
-		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
-		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
-			$mailContents .= $mailcatcher->get('/messages/' . $email->id . '.html')->getBody();
+		foreach ($this->getMails() as $email) {
+			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
+
 		$this->assertStringNotContainsStringIgnoringCase($text, $mailContents, $mailContents);
 	}
 
 	public function seeSenderInMail($sender)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$senders     = [];
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
+		$senders = [];
+		foreach ($this->getMails() as $email) {
 			$senders[] = $email->sender;
 		}
+
 		$this->assertContains('<' . $sender . '>', $senders, print_r($senders, true));
 	}
 
 	public function dontSeeSenderInMail($sender)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$senders     = [];
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
+		$senders = [];
+		foreach ($this->getMails() as $email) {
 			$senders[] = $email->sender;
 		}
+
 		$this->assertNotContains('<' . $sender . '>', $senders, print_r($senders, true));
 	}
 
 	public function seeInRecipients($recipient)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$recipients  = [];
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
+		$recipients = [];
+		foreach ($this->getMails() as $email) {
 			$recipients = array_merge($recipients, $email->recipients);
 		}
+
 		$this->assertContains('<' . $recipient . '>', $recipients, print_r($recipients, true));
 	}
 
 	public function dontSeeInRecipients($recipient)
 	{
-		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
-		$recipients  = [];
-		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
+		$recipients = [];
+		foreach ($this->getMails() as $email) {
 			$recipients = array_merge($recipients, $email->recipients);
 		}
+
 		$this->assertNotContains('<' . $recipient . '>', $recipients, print_r($recipients, true));
 	}
 
 	public function hasAttachmentsInMails($fileName)
 	{
-		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
-		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
-			$mailContents .= $mailcatcher->get('/messages/' . $email->id . '.source')->getBody();
+		foreach ($this->getMails() as $email) {
+			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
+
 		$this->assertStringContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents, $mailContents);
 	}
 
 	public function hasNotAttachmentsInMails($fileName)
 	{
-		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
-		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
-		foreach ($mails as $email) {
-			$mailContents .= $mailcatcher->get('/messages/' . $email->id . '.source')->getBody();
+		foreach ($this->getMails() as $email) {
+			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
-		$this->assertStringNotContainsStringIgnoringCase(
-			'Content-Disposition: attachment; filename=' . $fileName,
-			$mailContents,
-			print_r($mails, true)
-		);
+
+		$this->assertStringNotContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents);
+	}
+
+	private function getMails(): array
+	{
+		return (new ThinHTTP())->get($this->_getConfig('url') . '/messages')->data;
 	}
 }
