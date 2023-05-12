@@ -11,6 +11,8 @@ use Codeception\Module;
 
 class DPScreenshot extends Module
 {
+	protected array $requiredFields = ['screenshot_dir'];
+
 	public function makeScreenshot($fileName, $selector, $pictureSize, $windowSize = false)
 	{
 		/** @var DPBrowser $browser */

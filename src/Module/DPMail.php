@@ -12,21 +12,23 @@ use GuzzleHttp\Client;
 
 class DPMail extends Module
 {
+	protected array $requiredFields = ['url'];
+
 	public function clearEmails()
 	{
-		(new Client())->delete('http://mailcatcher-test:1080/messages');
+		(new Client())->delete($this->_getConfig('url') . '/messages');
 	}
 
 	public function seeNumberOfMails($count)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		$this->assertEquals($count, count($mails), print_r($mails, true));
 	}
 
 	public function seeInEmailSubjects($text)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$subjects    = [];
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -37,7 +39,7 @@ class DPMail extends Module
 
 	public function seeInEmails($text)
 	{
-		$mailcatcher  = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
 		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -48,7 +50,7 @@ class DPMail extends Module
 
 	public function dontSeeInEmails($text)
 	{
-		$mailcatcher  = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
 		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -59,7 +61,7 @@ class DPMail extends Module
 
 	public function seeSenderInMail($sender)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$senders     = [];
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -70,7 +72,7 @@ class DPMail extends Module
 
 	public function dontSeeSenderInMail($sender)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$senders     = [];
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -81,7 +83,7 @@ class DPMail extends Module
 
 	public function seeInRecipients($recipient)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$recipients  = [];
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -92,7 +94,7 @@ class DPMail extends Module
 
 	public function dontSeeInRecipients($recipient)
 	{
-		$mailcatcher = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher = new Client(['base_uri' => $this->_getConfig('url')]);
 		$recipients  = [];
 		$mails       = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -103,7 +105,7 @@ class DPMail extends Module
 
 	public function hasAttachmentsInMails($fileName)
 	{
-		$mailcatcher  = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
 		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {
@@ -114,7 +116,7 @@ class DPMail extends Module
 
 	public function hasNotAttachmentsInMails($fileName)
 	{
-		$mailcatcher  = new Client(['base_uri' => 'http://mailcatcher-test:1080']);
+		$mailcatcher  = new Client(['base_uri' => $this->_getConfig('url')]);
 		$mailContents = '';
 		$mails        = json_decode($mailcatcher->get('/messages')->getBody());
 		foreach ($mails as $email) {

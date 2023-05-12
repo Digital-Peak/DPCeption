@@ -11,80 +11,50 @@ use Codeception\Module\Db;
 
 class DPDb extends Db
 {
-	protected $prefix;
-
-	public function _initialize(): void
-	{
-		$this->prefix = (isset($this->config['prefix'])) ? $this->config['prefix'] : '';
-
-		parent::_initialize();
-	}
+	protected array $requiredFields = ['prefix'];
 
 	public function deleteFromDatabase($table, $criteria)
 	{
-		$table = $this->addPrefix($table);
-
-		$this->driver->deleteQueryByCriteria($table, $criteria);
+		$this->driver->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
 	}
 
 	public function updateInDatabase($table, array $data, array $criteria = []): void
 	{
-		$table = $this->addPrefix($table);
-
-		parent::updateInDatabase($table, $data, $criteria);
+		parent::updateInDatabase($this->_getConfig('prefix') . $table, $data, $criteria);
 	}
 
 	public function haveInDatabase($table, array $data): int
 	{
-		$table = $this->addPrefix($table);
-
-		return parent::haveInDatabase($table, $data);
+		return parent::haveInDatabase($this->_getConfig('prefix') . $table, $data);
 	}
 
 	public function seeInDatabase($table, $criteria = []): void
 	{
-		$table = $this->addPrefix($table);
-
-		parent::seeInDatabase($table, $criteria);
+		parent::seeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
 	public function dontSeeInDatabase($table, $criteria = []): void
 	{
-		$table = $this->addPrefix($table);
-
-		parent::dontSeeInDatabase($table, $criteria);
+		parent::dontSeeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
 	public function grabFromDatabase($table, $column, $criteria = [])
 	{
-		$table = $this->addPrefix($table);
-
-		return parent::grabFromDatabase($table, $column, $criteria);
+		return parent::grabFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
 	public function grabColumnFromDatabase($table, $column, $criteria = null): array
 	{
-		$table = $this->addPrefix($table);
-
-		return parent::grabColumnFromDatabase($table, $column, $criteria);
+		return parent::grabColumnFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
 	public function seeNumRecords($expectedNumber, $table, array $criteria = []): void
 	{
-		$table = $this->addPrefix($table);
-
-		parent::seeNumRecords($expectedNumber, $table, $criteria);
+		parent::seeNumRecords($expectedNumber, $this->_getConfig('prefix') . $table, $criteria);
 	}
 
 	public function grabNumRecords($table, array $criteria = []): int
 	{
-		$table = $this->addPrefix($table);
-
-		return parent::grabNumRecords($table, $criteria);
-	}
-
-	protected function addPrefix($table)
-	{
-		return $this->prefix . $table;
+		return parent::grabNumRecords($this->_getConfig('prefix') . $table, $criteria);
 	}
 }

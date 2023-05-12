@@ -11,6 +11,8 @@ use Codeception\Module;
 
 class DPFile extends Module
 {
+	protected array $requiredFields = ['files_root'];
+
 	public function seeFileNotEmpty($fileName)
 	{
 		$this->seeFileExists($fileName);
