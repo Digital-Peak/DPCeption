@@ -8,6 +8,7 @@
 namespace DigitalPeak\Module;
 
 use Closure;
+use Codeception\Exception\ModuleException;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverKeys;
@@ -244,16 +245,20 @@ class DPBrowser extends WebDriver
 			$this->amOnPage($page);
 		}
 
-		$this->dontSeeInPageSource('Deprecated:');
-		$this->dontSeeInPageSource('<b>Deprecated</b>:');
-		$this->dontSeeInPageSource('Notice:');
-		$this->dontSeeInPageSource('<b>Notice</b>:');
+		try {
+			$this->dontSeeInPageSource('Deprecated:');
+			$this->dontSeeInPageSource('<b>Deprecated</b>:');
+			$this->dontSeeInPageSource('Notice:');
+			$this->dontSeeInPageSource('<b>Notice</b>:');
 
-		// $this->dontSeeInPageSource('Warning:'); We have translation strings with this in the backend.
-		$this->dontSeeInPageSource('<b>Warning</b>:');
-		$this->dontSeeInPageSource('Strict standards:');
-		$this->dontSeeInPageSource('<b>Strict standards</b>:');
-		$this->dontSeeInPageSource('The requested page can\'t be found');
+			// $this->dontSeeInPageSource('Warning:'); We have translation strings with this in the backend.
+			$this->dontSeeInPageSource('<b>Warning</b>:');
+			$this->dontSeeInPageSource('Strict standards:');
+			$this->dontSeeInPageSource('<b>Strict standards</b>:');
+			$this->dontSeeInPageSource('The requested page can\'t be found');
+		} catch(ModuleException $e) {
+			// Ignore as it happens when an error occurs before a page is opened
+		}
 	}
 
 	public function searchForItem($name = null)
