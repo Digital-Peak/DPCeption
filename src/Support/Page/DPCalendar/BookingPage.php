@@ -11,12 +11,13 @@ class BookingPage
 {
 	public static $url                  = '/index.php?option=com_dpcalendar&view=booking';
 	public static $rootClass            = '.com-dpcalendar-booking';
-	public static $confirmButtonClass   = 'BookingPage::$confirmButtonClass';
+	public static $confirmButtonClass   = '.com-dpcalendar-booking__actions .dp-button-confirm';
 	public static $titleText            = 'Booking Details';
 	public static $confirmOrderText     = 'Thank you for booking';
 	public static $confirmPaidOrderText = 'Confirm the booking';
 	public static $failedOrderText      = 'Your payment has been cancelled';
 	public static $abortOrderText       = 'You aborted the booking process';
+	public static $cancelText           = 'Your booking has been cancelled';
 	public static $reviewTicketsHeader  = 'Review tickets';
 	public static $confirmHeader        = 'Confirm the booking';
 	public static $waitingListInfoText  = 'You are on the waiting list';
