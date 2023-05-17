@@ -5,7 +5,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GP
  */
 
- namespace DigitalPeak\Support\Step\DPCalendar;
+namespace DigitalPeak\Support\Step\DPCalendar;
 
 trait BookingTrait
 {
