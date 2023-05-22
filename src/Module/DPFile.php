@@ -2,7 +2,7 @@
 /**
  * @package    DPCeption
  * @copyright  Copyright (C) 2023 Digital Peak GmbH. <https://www.digital-peak.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GP
+ * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GP
  */
 
 namespace DigitalPeak\Module;
@@ -49,7 +49,7 @@ class DPFile extends Module
 	private function getFileDirectory(string $fileName)
 	{
 		$files = glob($this->_getConfig('files_root') . '/' . $fileName);
-		if(!$files) {
+		if (!$files) {
 			return '';
 		}
 

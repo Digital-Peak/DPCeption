@@ -2,7 +2,7 @@
 /**
  * @package    DPCeption
  * @copyright  Copyright (C) 2023 Digital Peak GmbH. <https://www.digital-peak.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GP
+ * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GP
  */
 
 namespace DigitalPeak\Module;
@@ -96,7 +96,7 @@ class DPBrowser extends WebDriver
 
 	public function closeSidebar()
 	{
-		if($this->executeJS('return window.getComputedStyle(document.querySelector("#sidebarmenu .sidebar-item-title"), null).display !== "none"')) {
+		if ($this->executeJS('return window.getComputedStyle(document.querySelector("#sidebarmenu .sidebar-item-title"), null).display !== "none"')) {
 			$this->waitForElementClickable('#menu-collapse');
 			$this->click('#menu-collapse');
 			$this->waitForElementNotVisible('#sidebarmenu .sidebar-item-title');
@@ -256,7 +256,7 @@ class DPBrowser extends WebDriver
 			$this->dontSeeInPageSource('Strict standards:');
 			$this->dontSeeInPageSource('<b>Strict standards</b>:');
 			$this->dontSeeInPageSource('The requested page can\'t be found');
-		} catch(ModuleException $e) {
+		} catch (ModuleException $e) {
 			// Ignore as it happens when an error occurs before a page is opened
 		}
 	}
@@ -285,7 +285,7 @@ class DPBrowser extends WebDriver
 			throw $e;
 		}
 
-		if(!is_array($logs)) {
+		if (!is_array($logs)) {
 			return;
 		}
 
