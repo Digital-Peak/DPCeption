@@ -21,8 +21,6 @@ trait ArticleTrait
 	 */
 	public function createArticle($data = null)
 	{
-		$I = $this;
-
 		$article = [
 			'catid'        => 2,
 			'title'        => 'Test article',
@@ -44,17 +42,17 @@ trait ArticleTrait
 			'publish_down' => null,
 			'created'      => (new DateTime())->format('Y-m-d H:i:s'),
 			'modified'     => (new DateTime())->format('Y-m-d H:i:s'),
-			'created_by'   => $I->grabFromDatabase('users', 'id', ['username' => 'admin']),
+			'created_by'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin']),
 		];
 
 		if (is_array($data)) {
 			$article = array_merge($article, $data);
 		}
 
-		$article['id'] = $I->haveInDatabase('content', $article);
-		$I->haveInDatabase('content_frontpage', ['content_id' => $article['id'], 'ordering' => 1]);
+		$article['id'] = $this->haveInDatabase('content', $article);
+		$this->haveInDatabase('content_frontpage', ['content_id' => $article['id'], 'ordering' => 1]);
 
-		$I->haveInDatabase('workflow_associations', ['item_id' => $article['id'], 'stage_id' => 1, 'extension' => 'com_content.article']);
+		$this->haveInDatabase('workflow_associations', ['item_id' => $article['id'], 'stage_id' => 1, 'extension' => 'com_content.article']);
 
 		return $article;
 	}
