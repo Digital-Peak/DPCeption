@@ -56,7 +56,7 @@ class DPBrowser extends WebDriver
 		$this->clickJoomlaToolbarButton('Save & Close');
 
 		/** @var DPDb $db */
-		$db = $this->getModule('DigitalPeak\Module\DPDb');
+		$db = $this->getModule(DPDb::class);
 
 		return $db->grabFromDatabase('categories', 'id', ['title' => $title, 'extension' => $component]);
 	}
@@ -64,7 +64,7 @@ class DPBrowser extends WebDriver
 	public function enablePlugin($pluginName, $enable = true)
 	{
 		/** @var DPDb $db */
-		$db = $this->getModule('DigitalPeak\Module\DPDb');
+		$db = $this->getModule(DPDb::class);
 
 		$db->updateInDatabase('extensions', ['enabled' => $enable ? 1 : 0], ['name' => $pluginName]);
 	}
@@ -148,7 +148,7 @@ class DPBrowser extends WebDriver
 	public function setExtensionParam($key, $value, $extension)
 	{
 		/** @var DPDb $db */
-		$db     = $this->getModule('DigitalPeak\Module\DPDb');
+		$db     = $this->getModule(DPDb::class);
 		$params = $db->grabFromDatabase('extensions', 'params', ['name' => $extension]);
 
 		$params       = json_decode($params);
