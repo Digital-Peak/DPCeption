@@ -184,7 +184,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function doAdministratorLogout($user)
+	public function doAdministratorLogout($user = null)
 	{
 		$this->click('User Menu');
 		$this->click('Log in');
