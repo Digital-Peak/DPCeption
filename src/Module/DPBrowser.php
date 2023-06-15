@@ -69,9 +69,11 @@ class DPBrowser extends WebDriver
 		$db->updateInDatabase('extensions', ['enabled' => $enable ? 1 : 0], ['name' => $pluginName]);
 	}
 
-	public function amOnPage($link, $checkForErrors = true): void
+	public function amOnPage($link, $checkForErrors = true, $clearSession = true): void
 	{
-		$this->executeJS('try { sessionStorage.clear();localStorage.clear(); } catch(error) {}');
+		if ($clearSession) {
+			$this->executeJS('try { sessionStorage.clear();localStorage.clear(); } catch(error) {}');
+		}
 		parent::amOnPage($link);
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
