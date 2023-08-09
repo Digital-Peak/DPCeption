@@ -2,7 +2,7 @@
 /**
  * @package    DPCeption
  * @copyright  Copyright (C) 2023 Digital Peak GmbH. <https://www.digital-peak.com>
- * @license    http://www.gnu.org/licenses/gpl-3.0.html GNU/GP
+ * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GP
  */
 
 namespace DigitalPeak\Module;
@@ -16,7 +16,7 @@ class DPScreenshot extends Module
 	public function makeScreenshot($fileName, $selector, $pictureSize, $windowSize = false)
 	{
 		/** @var DPBrowser $browser */
-		$browser = $this->getModule('DigitalPeak\Module\DPBrowser');
+		$browser = $this->getModule(DPBrowser::class);
 
 		if ($windowSize) {
 			$browser->resizeWindow($windowSize[0], $windowSize[1]);
@@ -61,7 +61,7 @@ class DPScreenshot extends Module
 		}
 
 		/** @var DPBrowser $driver */
-		$driver = $this->getModule('DigitalPeak\Module\DPBrowser');
+		$driver = $this->getModule(DPBrowser::class);
 
 		$driver->executeJS('const head=document.querySelector("#subhead-container"); if(head)head.style.position = "inherit";');
 
