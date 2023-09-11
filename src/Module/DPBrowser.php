@@ -10,6 +10,7 @@ namespace DigitalPeak\Module;
 use Closure;
 use Codeception\Exception\ModuleException;
 use Codeception\Module\WebDriver;
+use Facebook\WebDriver\Exception\NoSuchAlertException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
@@ -124,7 +125,12 @@ class DPBrowser extends WebDriver
 		$this->click($button);
 
 		if ($acceptPopup) {
-			$this->acceptPopup();
+			try {
+				$this->acceptPopup();
+			} catch (NoSuchAlertException $e) {
+				// On Joomla 5 we have a normal dialog
+				$this->click('Yes');
+			}
 		}
 
 		$this->waitForJs('return document.readyState == "complete"', 10);
