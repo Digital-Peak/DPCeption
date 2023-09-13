@@ -18,6 +18,6 @@ class MenuPage
 	public static $menuItemFieldMenuDropdown             = ['xpath' => '//select[@id="jform_menutype"]'];
 	public static $menuItemFieldMenuDropdownId           = 'jform_menutype';
 	public static $menuItemFieldMenuDropdownSelectoption = 'Main Menu';
-	public static $menuItemTypeModalText                 = 'Menu Item Type';
+	public static $menuItemTypeModalFrame                = '#menuTypeModal iframe, .joomla-dialog-content-select-field iframe';
 	public static $menuItemSuccessMessage                = 'Menu item saved';
 }
