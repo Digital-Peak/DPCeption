@@ -49,15 +49,26 @@ class DPBrowser extends WebDriver
 		file_put_contents($path, $content);
 	}
 
-	public function createDPCategory($title, $component)
+	public function createDPCategory($title, $component, $permissions = [])
 	{
+		/** @var DPDb $db */
+		$db = $this->getModule(DPDb::class);
+
 		$this->amOnPage('/administrator/index.php?option=com_categories&extension=' . $component);
 		$this->clickJoomlaToolbarButton('New');
 		$this->fillField('#jform_title', $title);
-		$this->clickJoomlaToolbarButton('Save & Close');
 
-		/** @var DPDb $db */
-		$db = $this->getModule(DPDb::class);
+		if ($permissions) {
+			$this->clickJoomlaToolbarButton('Save');
+			$this->click('Permissions');
+			foreach ($permissions as $permission) {
+				$groupId = $db->grabColumnFromDatabase('usergroups', 'id', ['title' => $permission['group']])[0];
+				$this->click($permission['group']);
+				$this->selectOption('#jform_rules_' . $permission['action'] . '_' . $groupId, $permission['allowed'] ? 1 : 0);
+			}
+		}
+
+		$this->clickJoomlaToolbarButton('Save & Close');
 
 		return $db->grabFromDatabase('categories', 'id', ['title' => $title, 'extension' => $component]);
 	}
