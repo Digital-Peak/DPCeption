@@ -63,7 +63,12 @@ class DPBrowser extends WebDriver
 			$this->click('Permissions');
 			foreach ($permissions as $permission) {
 				$groupId = $db->grabColumnFromDatabase('usergroups', 'id', ['title' => $permission['group']])[0];
-				$this->click($permission['group']);
+
+				// Public is preselected and can't be selected by the web driver
+				if ($permission['group'] !== 'Public') {
+					$this->click($permission['group']);
+				}
+
 				$this->selectOption('#jform_rules_' . $permission['action'] . '_' . $groupId, $permission['allowed'] ? 1 : 0);
 			}
 		}
