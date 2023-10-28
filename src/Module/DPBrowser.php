@@ -233,7 +233,7 @@ class DPBrowser extends WebDriver
 		$this->fillField('#username', $user);
 		$this->fillField('#password', $password);
 		$this->click('#remember');
-		$this->click('.com-users-login__submit button, #content .login button');
+		$this->click('.com-users-login__submit button[type="submit"], #content .login button[type="submit"]');
 
 		$this->waitForElement('.profile');
 
