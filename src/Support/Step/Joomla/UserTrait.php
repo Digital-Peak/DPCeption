@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\Joomla;
 
-use DateTime;
-
 trait UserTrait
 {
 	/**
@@ -24,7 +22,7 @@ trait UserTrait
 		$user = [
 			'name'         => 'Test Manager',
 			'username'     => 'test',
-			'registerDate' => (new DateTime())->format('Y-m-d H:i:s'),
+			'registerDate' => (new \DateTime())->format('Y-m-d H:i:s'),
 			'params'       => ''
 		];
 

@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\Joomla;
 
-use DateTime;
-
 trait CustomFieldTrait
 {
 	/**
@@ -34,14 +32,14 @@ trait CustomFieldTrait
 			'state'           => 1,
 			'access'          => 1,
 			'language'        => '*',
-			'created_time'    => (new DateTime())->format('Y-m-d H:i:s'),
+			'created_time'    => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_user_id' => $I->grabFromDatabase('users', 'id', ['username' => 'admin']),
 			'params'          => '',
 			'fieldparams'     => '',
 			'default_value'   => '',
 			'required'        => 0,
 			'description'     => '',
-			'modified_time'   => (new DateTime())->format('Y-m-d H:i:s')
+			'modified_time'   => (new \DateTime())->format('Y-m-d H:i:s')
 		];
 
 		if (is_array($data)) {

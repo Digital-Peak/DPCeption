@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\DPCalendar;
 
-use DateTime;
-
 trait EventTrait
 {
 	/**
@@ -25,15 +23,15 @@ trait EventTrait
 			'title'       => 'Test Event',
 			'alias'       => 'test-event',
 			'uid'         => 'test',
-			'start_date'  => (new DateTime('+2 hours'))->format('Y-m-d H:i:00'),
-			'end_date'    => (new DateTime('+4 hours'))->format('Y-m-d H:i:00'),
+			'start_date'  => (new \DateTime('+2 hours'))->format('Y-m-d H:i:00'),
+			'end_date'    => (new \DateTime('+4 hours'))->format('Y-m-d H:i:00'),
 			'catid'       => 8,
 			'original_id' => 0,
 			'state'       => 1,
 			'language'    => '*',
 			'price'       => '',
 			'description' => '',
-			'created'     => (new DateTime())->format('Y-m-d H:i:s'),
+			'created'     => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_by'  => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 

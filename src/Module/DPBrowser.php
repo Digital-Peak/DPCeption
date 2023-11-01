@@ -7,7 +7,6 @@
 
 namespace DigitalPeak\Module;
 
-use Closure;
 use Codeception\Exception\ModuleException;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\NoSuchAlertException;
@@ -331,7 +330,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function waitForElementChange($element, Closure $callback, int $timeout = -1): void
+	public function waitForElementChange($element, \Closure $callback, int $timeout = -1): void
 	{
 		parent::waitForElementChange($element, $callback, $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
 	}

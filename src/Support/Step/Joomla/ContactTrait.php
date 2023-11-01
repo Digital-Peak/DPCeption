@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\Joomla;
 
-use DateTime;
-
 trait ContactTrait
 {
 	/**
@@ -33,8 +31,8 @@ trait ContactTrait
 			'metadesc'  => '',
 			'metadata'  => '',
 			'params'    => '',
-			'created'   => (new DateTime())->format('Y-m-d H:i:s'),
-			'modified'  => (new DateTime())->format('Y-m-d H:i:s')
+			'created'   => (new \DateTime())->format('Y-m-d H:i:s'),
+			'modified'  => (new \DateTime())->format('Y-m-d H:i:s')
 		];
 
 		if (is_array($data)) {

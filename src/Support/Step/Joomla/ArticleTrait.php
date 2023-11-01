@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\Joomla;
 
-use DateTime;
-
 trait ArticleTrait
 {
 	/**
@@ -38,10 +36,10 @@ trait ArticleTrait
 			'metakey'      => '',
 			'metadesc'     => '',
 			'metadata'     => '',
-			'publish_up'   => (new DateTime())->format('Y-m-d H:i:s'),
+			'publish_up'   => (new \DateTime())->format('Y-m-d H:i:s'),
 			'publish_down' => null,
-			'created'      => (new DateTime())->format('Y-m-d H:i:s'),
-			'modified'     => (new DateTime())->format('Y-m-d H:i:s'),
+			'created'      => (new \DateTime())->format('Y-m-d H:i:s'),
+			'modified'     => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_by'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin']),
 		];
 

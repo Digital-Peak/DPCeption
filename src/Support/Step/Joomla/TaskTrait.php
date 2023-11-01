@@ -7,8 +7,6 @@
 
 namespace DigitalPeak\Support\Step\Joomla;
 
-use DateTime;
-
 trait TaskTrait
 {
 	/**
@@ -27,7 +25,7 @@ trait TaskTrait
 			'cron_rules'      => '{"type":"manual"}',
 			'type'            => '',
 			'state'           => 1,
-			'created'         => (new DateTime())->format('Y-m-d H:i:s'),
+			'created'         => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_by'      => $this->grabFromDatabase('users', 'id', ['username' => 'admin']),
 			'params'          => ''
 		];
