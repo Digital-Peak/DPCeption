@@ -15,7 +15,7 @@ class DPDb extends Db
 
 	public function deleteFromDatabase($table, $criteria)
 	{
-		$this->driver->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
+		$this->_getDriver()->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
 	}
 
 	public function updateInDatabase($table, array $data, array $criteria = []): void
