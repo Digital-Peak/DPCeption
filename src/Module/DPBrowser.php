@@ -208,7 +208,7 @@ class DPBrowser extends WebDriver
 	public function doAdministratorLogout($user = null)
 	{
 		$this->click('User Menu');
-		$this->click('Log in');
+		$this->click('Log out');
 		$this->waitForElement('#mod-login-username');
 		$this->waitForText('Log in');
 
