@@ -7,16 +7,27 @@
 
 namespace DigitalPeak\Module;
 
+use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
-use DigitalPeak\ThinHTTP;
+use DigitalPeak\ThinHTTP\ClientFactoryAwareTrait;
+use DigitalPeak\ThinHTTP\CurlClientFactory;
 
 class DPMail extends Module
 {
+	use ClientFactoryAwareTrait;
+
 	protected array $requiredFields = ['url'];
+
+	public function __construct(protected ModuleContainer $moduleContainer, ?array $config = null)
+	{
+		parent::__construct($moduleContainer, $config);
+
+		$this->setClientFactory(new CurlClientFactory());
+	}
 
 	public function clearEmails()
 	{
-		(new ThinHTTP())->delete($this->_getConfig('url') . '/messages');
+		$this->getClientFactory()->create()->delete($this->_getConfig('url') . '/messages');
 	}
 
 	public function seeNumberOfMails($count)
@@ -40,7 +51,7 @@ class DPMail extends Module
 	{
 		$mailContents = '';
 		foreach ($this->getMails() as $email) {
-			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
+			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
 
 		$this->assertStringContainsStringIgnoringCase($text, $mailContents, $mailContents);
@@ -50,7 +61,7 @@ class DPMail extends Module
 	{
 		$mailContents = '';
 		foreach ($this->getMails() as $email) {
-			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
+			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
 
 		$this->assertStringNotContainsStringIgnoringCase($text, $mailContents, $mailContents);
@@ -100,7 +111,7 @@ class DPMail extends Module
 	{
 		$mailContents = '';
 		foreach ($this->getMails() as $email) {
-			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
+			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
 
 		$this->assertStringContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents, $mailContents);
@@ -110,7 +121,7 @@ class DPMail extends Module
 	{
 		$mailContents = '';
 		foreach ($this->getMails() as $email) {
-			$mailContents .= (new ThinHTTP())->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
+			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
 
 		$this->assertStringNotContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents);
@@ -118,6 +129,6 @@ class DPMail extends Module
 
 	private function getMails(): array
 	{
-		return (new ThinHTTP())->get($this->_getConfig('url') . '/messages')->data;
+		return $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data;
 	}
 }
