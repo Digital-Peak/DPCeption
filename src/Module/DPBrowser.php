@@ -48,7 +48,7 @@ class DPBrowser extends WebDriver
 		file_put_contents($path, $content);
 	}
 
-	public function createDPCategory($title, $component, $permissions = [])
+	public function createDPCategory(string $title, string $component, array $permissions = [], int $parentId = 0)
 	{
 		/** @var DPDb $db */
 		$db = $this->getModule(DPDb::class);
@@ -56,6 +56,10 @@ class DPBrowser extends WebDriver
 		$this->amOnPage('/administrator/index.php?option=com_categories&extension=' . $component);
 		$this->clickJoomlaToolbarButton('New');
 		$this->fillField('#jform_title', $title);
+
+		if ($parentId) {
+			$this->executeJS('document.querySelector("joomla-field-fancy-select[placeholder=\"Type or select a Category\"]").choicesInstance.setChoiceByValue("' . $parentId . '")');
+		}
 
 		if ($permissions) {
 			$this->clickJoomlaToolbarButton('Save');
