@@ -192,7 +192,11 @@ class DPBrowser extends WebDriver
 		}
 
 		if ($useSnapshot && $this->loadSessionSnapshot('back' . $user)) {
-			return;
+			try {
+				$this->grabAttributeFrom('#mod-login-username', 'name');
+			} catch (\Exception) {
+				return;
+			}
 		}
 
 		$this->amOnPage('/administrator/index.php');
