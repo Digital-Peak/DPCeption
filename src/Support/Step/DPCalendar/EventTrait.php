@@ -49,6 +49,14 @@ trait EventTrait
 			$event['booking_options'] = json_encode($event['booking_options']);
 		}
 
+		if (isset($event['events_discount']) && is_array($event['events_discount'])) {
+			$event['events_discount'] = json_encode($event['events_discount']);
+		}
+
+		if (isset($event['tickets_discount']) && is_array($event['tickets_discount'])) {
+			$event['tickets_discount'] = json_encode($event['tickets_discount']);
+		}
+
 		$locationId = 0;
 		if (!empty($event['location_id'])) {
 			$locationId = $event['location_id'];
