@@ -32,6 +32,7 @@ trait TicketTrait
 			'telephone' => '123',
 			'latitude'  => 1,
 			'longitude' => 1,
+			'created'   => (new \DateTime())->format('Y-m-d H:i:s'),
 			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 

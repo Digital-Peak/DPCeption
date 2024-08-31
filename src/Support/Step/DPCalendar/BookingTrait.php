@@ -32,6 +32,7 @@ trait BookingTrait
 			'telephone' => '123',
 			'latitude'  => 1,
 			'longitude' => 1,
+			'book_date' => (new \DateTime())->format('Y-m-d H:i:s'),
 			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
