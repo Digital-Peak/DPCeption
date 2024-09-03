@@ -29,7 +29,6 @@ trait EventTrait
 			'original_id' => 0,
 			'state'       => 1,
 			'language'    => '*',
-			'price'       => '',
 			'description' => '',
 			'created'     => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_by'  => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
@@ -39,10 +38,23 @@ trait EventTrait
 			$event = array_merge($event, $data);
 		}
 
-		if (is_array($event['price'])) {
+		// Old price structure
+		if (array_key_exists('price', $event) && is_array($event['price']) && array_key_exists('value', $event['price'])) {
 			$event['price']['label']       = $event['price']['label'] ?? [''];
 			$event['price']['description'] = $event['price']['description'] ?? [''];
 			$event['price']                = json_encode($event['price']);
+		}
+
+		// New price structure
+		if (array_key_exists('price', $event) && is_array($event['price']) && !array_key_exists('value', $event['price'])) {
+			foreach ($event['price'] as $key => $price) {
+				$price['label']                 = $price['label'] ?? '';
+				$price['description']           = $price['description'] ?? '';
+				$price['currency']              = $price['currency'] ?? 'EUR';
+				$event['price']['price' . $key] = $price;
+			}
+
+			$event['price'] = json_encode($event['price']);
 		}
 
 		if (isset($event['booking_options']) && is_array($event['booking_options'])) {
