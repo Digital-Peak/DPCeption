@@ -52,12 +52,23 @@ trait EventTrait
 				$price['description']           = $price['description'] ?? '';
 				$price['currency']              = $price['currency'] ?? 'EUR';
 				$event['price']['price' . $key] = $price;
+				unset($event['price'][$key]);
 			}
 
 			$event['price'] = json_encode($event['price']);
 		}
 
 		if (isset($event['booking_options']) && is_array($event['booking_options'])) {
+			foreach ($event['booking_options'] as $key => $price) {
+				$price['label']                                     = $price['label'] ?? '';
+				$price['description']                               = $price['description'] ?? '';
+				$price['currency']                                  = $price['currency'] ?? 'EUR';
+				$price['amount']                                    = $price['amount'] ?? 2;
+				$price['min_amount']                                = $price['min_amount'] ?? 0;
+				$event['booking_options']['booking_options' . $key] = $price;
+				unset($event['booking_options'][$key]);
+			}
+
 			$event['booking_options'] = json_encode($event['booking_options']);
 		}
 
