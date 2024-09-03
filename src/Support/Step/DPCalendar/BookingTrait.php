@@ -49,13 +49,17 @@ trait BookingTrait
 			$booking['processor'] = 'manual-1';
 		}
 
+		if (!empty($booking['price']) && empty($booking['currency'])) {
+			$booking['currency'] = 'EUR';
+		}
+
 		$booking['id'] = $this->haveInDatabase('dpcalendar_bookings', $booking);
 
 		if ($shortCode) {
 			$booking['country_code'] = $shortCode;
 		}
 
-		if ($shortCode == 'US') {
+		if ($shortCode === 'US') {
 			$booking['country_code_value'] = 'United States';
 		}
 
