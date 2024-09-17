@@ -38,6 +38,11 @@ class DPDb extends Db
 		parent::dontSeeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
+	public function grabEntryFromDatabase(string $table, array $criteria = []): array
+	{
+		return parent::grabEntryFromDatabase($this->_getConfig('prefix') . $table, $criteria);
+	}
+
 	public function grabFromDatabase($table, $column, $criteria = [])
 	{
 		return parent::grabFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
