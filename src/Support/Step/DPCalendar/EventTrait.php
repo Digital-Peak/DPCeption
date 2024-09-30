@@ -58,6 +58,19 @@ trait EventTrait
 			$event['price'] = json_encode($event['price']);
 		}
 
+		// Renamed price field with prices
+		if (array_key_exists('prices', $event) && is_array($event['prices']) && !array_key_exists('value', $event['prices'])) {
+			foreach ($event['prices'] as $key => $price) {
+				$price['label']                   = $price['label'] ?? '';
+				$price['description']             = $price['description'] ?? '';
+				$price['currency']                = $price['currency'] ?? 'EUR';
+				$event['prices']['prices' . $key] = $price;
+				unset($event['prices'][$key]);
+			}
+
+			$event['prices'] = json_encode($event['prices']);
+		}
+
 		if (isset($event['booking_options']) && is_array($event['booking_options'])) {
 			foreach ($event['booking_options'] as $key => $price) {
 				$price['label']                                     = $price['label'] ?? '';
