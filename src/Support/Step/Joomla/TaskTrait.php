@@ -12,12 +12,8 @@ trait TaskTrait
 	/**
 	 * Creates a task in the database and returns the task data
 	 * as array including the id of the new task.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createTask($data = null)
+	public function createTask(?array $data = null): array
 	{
 		$task = [
 			'title'           => 'Test task',
@@ -30,7 +26,7 @@ trait TaskTrait
 			'params'          => ''
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$task = array_merge($task, $data);
 		}
 

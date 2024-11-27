@@ -12,12 +12,8 @@ trait BookingTrait
 	/**
 	 * Creates a booking in the database and returns the booking data
 	 * as array including the id of the new booking.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createBooking($data = null)
+	public function createBooking(?array $data = null): array
 	{
 		$booking = [
 			'uid'       => 'BOOKING-UID',
@@ -36,7 +32,7 @@ trait BookingTrait
 			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$booking = array_merge($booking, $data);
 		}
 

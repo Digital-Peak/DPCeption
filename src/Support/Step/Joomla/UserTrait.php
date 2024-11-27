@@ -12,12 +12,8 @@ trait UserTrait
 	/**
 	 * Creates a user in the database and returns the user data
 	 * as array including the id of the new user.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createUser($data = null)
+	public function createUser(?array $data = null): array
 	{
 		$user = [
 			'name'         => 'Test Manager',
@@ -26,7 +22,7 @@ trait UserTrait
 			'params'       => ''
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$user = array_merge($user, $data);
 		}
 

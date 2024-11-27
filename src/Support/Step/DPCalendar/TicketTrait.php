@@ -12,12 +12,8 @@ trait TicketTrait
 	/**
 	 * Creates a ticket in the database and returns the ticket data
 	 * as array including the id of the new ticket.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createTicket($data = null)
+	public function createTicket(?array $data = null): array
 	{
 		$ticket = [
 			'uid'       => 'TICKET-UID',
@@ -36,7 +32,7 @@ trait TicketTrait
 			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$ticket = array_merge($ticket, $data);
 		}
 

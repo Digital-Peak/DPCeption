@@ -12,12 +12,8 @@ trait EventTrait
 	/**
 	 * Creates an event in the database and returns the event data
 	 * as array including the id of the new event.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createEvent($data = null)
+	public function createEvent(?array $data = null): array
 	{
 		$event = [
 			'title'       => 'Test Event',
@@ -34,19 +30,19 @@ trait EventTrait
 			'created_by'  => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$event = array_merge($event, $data);
 		}
 
 		// Old price structure
-		if (array_key_exists('price', $event) && is_array($event['price']) && array_key_exists('value', $event['price'])) {
+		if (\array_key_exists('price', $event) && \is_array($event['price']) && \array_key_exists('value', $event['price'])) {
 			$event['price']['label']       = $event['price']['label'] ?? [''];
 			$event['price']['description'] = $event['price']['description'] ?? [''];
 			$event['price']                = json_encode($event['price']);
 		}
 
 		// New price structure
-		if (array_key_exists('price', $event) && is_array($event['price']) && !array_key_exists('value', $event['price'])) {
+		if (\array_key_exists('price', $event) && \is_array($event['price']) && !\array_key_exists('value', $event['price'])) {
 			foreach ($event['price'] as $key => $price) {
 				$price['label']                 = $price['label'] ?? '';
 				$price['description']           = $price['description'] ?? '';
@@ -59,7 +55,7 @@ trait EventTrait
 		}
 
 		// Renamed price field with prices
-		if (array_key_exists('prices', $event) && is_array($event['prices']) && !array_key_exists('value', $event['prices'])) {
+		if (\array_key_exists('prices', $event) && \is_array($event['prices']) && !\array_key_exists('value', $event['prices'])) {
 			foreach ($event['prices'] as $key => $price) {
 				$price['label']                   = $price['label'] ?? '';
 				$price['description']             = $price['description'] ?? '';
@@ -71,7 +67,7 @@ trait EventTrait
 			$event['prices'] = json_encode($event['prices']);
 		}
 
-		if (isset($event['booking_options']) && is_array($event['booking_options'])) {
+		if (isset($event['booking_options']) && \is_array($event['booking_options'])) {
 			foreach ($event['booking_options'] as $key => $price) {
 				$price['label']                                     = $price['label'] ?? '';
 				$price['description']                               = $price['description'] ?? '';
@@ -85,11 +81,11 @@ trait EventTrait
 			$event['booking_options'] = json_encode($event['booking_options']);
 		}
 
-		if (isset($event['events_discount']) && is_array($event['events_discount'])) {
+		if (isset($event['events_discount']) && \is_array($event['events_discount'])) {
 			$event['events_discount'] = json_encode($event['events_discount']);
 		}
 
-		if (isset($event['tickets_discount']) && is_array($event['tickets_discount'])) {
+		if (isset($event['tickets_discount']) && \is_array($event['tickets_discount'])) {
 			$event['tickets_discount'] = json_encode($event['tickets_discount']);
 		}
 

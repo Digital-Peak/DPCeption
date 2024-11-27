@@ -12,12 +12,8 @@ trait ContactTrait
 	/**
 	 * Creates a contact in the database and returns the contact data
 	 * as array including the id of the new contact.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createContact($data = null)
+	public function createContact(?array $data = null): array
 	{
 		$contact = [
 			'name'      => 'Test Manager',
@@ -35,7 +31,7 @@ trait ContactTrait
 			'modified'  => (new \DateTime())->format('Y-m-d H:i:s')
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$contact = array_merge($contact, $data);
 		}
 

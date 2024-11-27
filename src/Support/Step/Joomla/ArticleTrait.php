@@ -12,12 +12,8 @@ trait ArticleTrait
 	/**
 	 * Creates an article in the database and returns the article data
 	 * as array including the id of the new article.
-	 *
-	 * @param array $data
-	 *
-	 * @return array
 	 */
-	public function createArticle($data = null)
+	public function createArticle(?array $data = null): array
 	{
 		$article = [
 			'catid'        => 2,
@@ -43,7 +39,7 @@ trait ArticleTrait
 			'created_by'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin']),
 		];
 
-		if (is_array($data)) {
+		if (\is_array($data)) {
 			$article = array_merge($article, $data);
 		}
 
