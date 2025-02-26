@@ -13,14 +13,14 @@ class DPFile extends Module
 {
 	protected array $requiredFields = ['files_root'];
 
-	public function seeFileNotEmpty($fileName)
+	public function seeFileNotEmpty($fileName): void
 	{
 		$this->seeFileExists($fileName);
 
 		$this->assertGreaterThan(1, filesize($this->getFileDirectory($fileName)));
 	}
 
-	public function seeFileExists($fileName)
+	public function seeFileExists($fileName): void
 	{
 		for ($i = 0; $i < 5; $i++) {
 			if ($this->getFileDirectory($fileName)) {
@@ -32,24 +32,24 @@ class DPFile extends Module
 		$this->assertNotEmpty($this->getFileDirectory($fileName));
 	}
 
-	public function hasInFile($fileName, $content)
+	public function hasInFile($fileName, string $content): void
 	{
 		$this->seeFileExists($fileName);
 
 		$this->assertStringContainsString($content, file_get_contents($this->getFileDirectory($fileName)));
 	}
 
-	public function hasNotInFile($fileName, $content)
+	public function hasNotInFile($fileName, string $content): void
 	{
 		$this->seeFileExists($fileName);
 
 		$this->assertStringNotContainsString($content, file_get_contents($this->getFileDirectory($fileName)));
 	}
 
-	private function getFileDirectory(string $fileName)
+	private function getFileDirectory(string $fileName): string
 	{
 		$files = glob($this->_getConfig('files_root') . '/' . $fileName);
-		if (!$files) {
+		if ($files === [] || $files === false) {
 			return '';
 		}
 

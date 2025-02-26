@@ -13,7 +13,7 @@ class DPScreenshot extends Module
 {
 	protected array $requiredFields = ['screenshot_dir'];
 
-	public function makeScreenshot($fileName, $selector, $pictureSize, $windowSize = false)
+	public function makeScreenshot($fileName, $selector, ?array $pictureSize, $windowSize = false)
 	{
 		/** @var DPBrowser $browser */
 		$browser = $this->getModule(DPBrowser::class);
@@ -37,7 +37,7 @@ class DPScreenshot extends Module
 	 * @param $file
 	 * @param $coords
 	 */
-	public function drawRectangle($file, $coords)
+	public function drawRectangle($file, $coords): void
 	{
 		// Load image
 		$img = imagecreatefrompng($file);
@@ -53,7 +53,7 @@ class DPScreenshot extends Module
 		imagedestroy($img);
 	}
 
-	private function takeScreenshot($fileName, $selector, array $dimensions = null)
+	private function takeScreenshot(string $fileName, $selector, array $dimensions = null): string
 	{
 		$root = $this->_getConfig('screenshot_dir') . '/';
 		if (!is_dir(dirname($root . $fileName))) {
@@ -84,8 +84,8 @@ class DPScreenshot extends Module
 
 		$element_screenshot = $root . $fileName . '.png'; // Change the path here as well
 
-		$element_width  = $dimensions ? $dimensions[0] : $element->getSize()->getWidth();
-		$element_height = $dimensions ? $dimensions[1] : $element->getSize()->getHeight();
+		$element_width  = $dimensions !== null && $dimensions !== [] ? $dimensions[0] : $element->getSize()->getWidth();
+		$element_height = $dimensions !== null && $dimensions !== [] ? $dimensions[1] : $element->getSize()->getHeight();
 
 
 		$element_src_x = $element->getLocation()->getX();
@@ -114,7 +114,7 @@ class DPScreenshot extends Module
 		return $element_screenshot;
 	}
 
-	private function takeFullScreenshot(DPBrowser $driver, $screenshot_name)
+	private function takeFullScreenshot(DPBrowser $driver, string $screenshot_name): void
 	{
 		$total_width     = $driver->executeJS('return Math.max.apply(null, [document.body.clientWidth, document.body.scrollWidth, document.documentElement.scrollWidth, document.documentElement.clientWidth])');
 		$total_height    = $driver->executeJS('return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight])');
@@ -122,6 +122,7 @@ class DPScreenshot extends Module
 		$viewport_height = $driver->executeJS('return document.documentElement.clientHeight');
 		$driver->executeJS('window.scrollTo(0, 0)');
 		$driver->wait(0.8);
+
 		$full_capture = imagecreatetruecolor($total_width, $total_height);
 		$repeat_x     = ceil($total_width / $viewport_width);
 		$repeat_y     = ceil($total_height / $viewport_height);
@@ -130,14 +131,14 @@ class DPScreenshot extends Module
 			$before_top = -1;
 			for ($y = 0; $y < $repeat_y; $y++) {
 				$y_pos = $y * $viewport_height;
-				$driver->executeJS("window.scrollTo({$x_pos}, {$y_pos})");
+				$driver->executeJS(sprintf('window.scrollTo(%s, %s)', $x_pos, $y_pos));
 				$driver->wait(0.8);
 				$scroll_left = $driver->executeJS("return window.pageXOffset");
 				$scroll_top  = $driver->executeJS("return window.pageYOffset");
 				if ($before_top == $scroll_top) {
 					break;
 				}
-				$tmp_name = "{$screenshot_name}.tmp";
+				$tmp_name = $screenshot_name . '.tmp';
 				$driver->_saveScreenshot($tmp_name);
 				if (!file_exists($tmp_name)) {
 					throw new \Exception('Could not save screenshot');

@@ -51,7 +51,7 @@ class Reporter extends Console implements ConsolePrinter
 		$prefix = $this->output->isInteractive() && !$this->isDetailed($test) && $inProgress ? '- ' : '';
 
 		$testString = '(' . $this->counter . '/' . $this->total . ') ' . Descriptor::getTestAsString($test);
-		$testString = preg_replace('#^([^:]+):\s#', "<focus>$1{$this->chars['of']}</focus> ", $testString);
+		$testString = preg_replace('#^([^:]+):\s#', sprintf('<focus>$1%s</focus> ', $this->chars['of']), $testString);
 
 		$this->messageFactory->message($testString)->prepend($prefix)->write();
 	}
@@ -66,9 +66,9 @@ class Reporter extends Console implements ConsolePrinter
 			->style('info')->write();
 	}
 
-	private function size($size)
+	private function size(int $size): string
 	{
 		$unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
-		return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $unit[$i];
+		return @round($size / 1024 ** $i = floor(log($size, 1024)), 2) . $unit[$i];
 	}
 }

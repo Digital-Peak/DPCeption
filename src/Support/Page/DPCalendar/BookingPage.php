@@ -23,12 +23,12 @@ class BookingPage
 	public static $confirmHeader              = 'Confirm the booking';
 	public static $waitingListInfoText        = 'You are on the waiting list';
 
-	public static function getDetailsUrl(string $bookingId)
+	public static function getDetailsUrl(string $bookingId): string
 	{
 		return self::$url . '&uid=' . $bookingId;
 	}
 
-	public static function getConfirmUrl(string $bookingId)
+	public static function getConfirmUrl(string $bookingId): string
 	{
 		return self::$url . '&layout=confirm&uid=' . $bookingId;
 	}

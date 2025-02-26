@@ -19,7 +19,6 @@ trait ArticleTrait
 			'catid'        => 2,
 			'title'        => 'Test article',
 			'alias'        => 'test-article',
-			'introtext'    => 'Test description.',
 			'featured'     => 1,
 			'state'        => 1,
 			'access'       => 1,

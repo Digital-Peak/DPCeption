@@ -13,7 +13,7 @@ class DPDb extends Db
 {
 	protected array $requiredFields = ['prefix'];
 
-	public function deleteFromDatabase($table, $criteria)
+	public function deleteFromDatabase(string $table, array $criteria): void
 	{
 		$this->_getDriver()->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
 	}
@@ -28,12 +28,12 @@ class DPDb extends Db
 		return parent::haveInDatabase($this->_getConfig('prefix') . $table, $data);
 	}
 
-	public function seeInDatabase($table, $criteria = []): void
+	public function seeInDatabase($table, array $criteria = []): void
 	{
 		parent::seeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function dontSeeInDatabase($table, $criteria = []): void
+	public function dontSeeInDatabase($table, array $criteria = []): void
 	{
 		parent::dontSeeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
@@ -43,17 +43,17 @@ class DPDb extends Db
 		return parent::grabEntryFromDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function grabFromDatabase($table, $column, $criteria = [])
+	public function grabFromDatabase($table, string $column, array $criteria = [])
 	{
 		return parent::grabFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
-	public function grabColumnFromDatabase($table, $column, $criteria = null): array
+	public function grabColumnFromDatabase($table, string $column, array $criteria = null): array
 	{
 		return parent::grabColumnFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
-	public function seeNumRecords($expectedNumber, $table, array $criteria = []): void
+	public function seeNumRecords(int $expectedNumber, $table, array $criteria = []): void
 	{
 		parent::seeNumRecords($expectedNumber, $this->_getConfig('prefix') . $table, $criteria);
 	}

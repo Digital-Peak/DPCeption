@@ -24,7 +24,7 @@ trait MenuTrait
 
 		$menuItem = [
 			'title'        => $title,
-			'alias'        => strtolower(str_replace(' ', '-', (string)$title)),
+			'alias'        => strtolower(str_replace(' ', '-', $title)),
 			'published'    => 1,
 			'menutype'     => 'mainmenu',
 			'type'         => 'component',

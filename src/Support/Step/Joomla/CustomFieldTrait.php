@@ -43,6 +43,7 @@ trait CustomFieldTrait
 		if (\is_array($field['params'])) {
 			$field['params'] = json_encode($field['params']);
 		}
+
 		if (\is_array($field['fieldparams'])) {
 			$field['fieldparams'] = json_encode($field['fieldparams']);
 		}

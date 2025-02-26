@@ -33,13 +33,13 @@ class DPBrowser extends WebDriver
 
 		// When no module is given and the array key doesn't exist, fallback to the current module configuration
 		if ($element && !$moduleName && !array_key_exists($element, $config)) {
-			$moduleName = __CLASS__;
+			$moduleName = self::class;
 		}
 
-		return !$element ? $config : $config[$element];
+		return $element ? $config[$element] : $config;
 	}
 
-	public function setJoomlaGlobalConfigurationOption($oldValue, $newValue)
+	public function setJoomlaGlobalConfigurationOption($oldValue, $newValue): void
 	{
 		$path = $this->getConfiguration('home_dir') . '/configuration.php';
 		shell_exec('sudo chmod 777 ' . $path);
@@ -57,11 +57,11 @@ class DPBrowser extends WebDriver
 		$this->clickJoomlaToolbarButton('New');
 		$this->fillField('#jform_title', $title);
 
-		if ($parentId) {
+		if ($parentId !== 0) {
 			$this->executeJS('document.querySelector("joomla-field-fancy-select[placeholder=\"Type or select a Category\"]").choicesInstance.setChoiceByValue("' . $parentId . '")');
 		}
 
-		if ($permissions) {
+		if ($permissions !== []) {
 			$this->clickJoomlaToolbarButton('Save');
 			$this->click('Permissions');
 			foreach ($permissions as $permission) {
@@ -81,7 +81,7 @@ class DPBrowser extends WebDriver
 		return $db->grabFromDatabase('categories', 'id', ['title' => $title, 'extension' => $component]);
 	}
 
-	public function enablePlugin($pluginName, $enable = true)
+	public function enablePlugin($pluginName, $enable = true): void
 	{
 		/** @var DPDb $db */
 		$db = $this->getModule(DPDb::class);
@@ -95,26 +95,26 @@ class DPBrowser extends WebDriver
 		parent::amOnPage($link);
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
-		if ($checkForErrors && strpos($link, 'com_dp')) {
+		if ($checkForErrors && strpos((string) $link, 'com_dp')) {
 			$this->checkForPhpNoticesOrWarnings();
 			$this->checkForJsErrors();
 		}
 	}
 
-	public function deleteAllCookies()
+	public function deleteAllCookies(): void
 	{
 		$this->executeInSelenium(fn (RemoteWebDriver $webdriver) => $webdriver->manage()->deleteAllCookies());
 		$this->reloadPage();
 	}
 
-	public function makeVisible($selector)
+	public function makeVisible($selector): void
 	{
 		$this->waitForElement($selector);
 		$this->scrollTo($selector, null, -100);
 		$this->wait(1);
 	}
 
-	public function closeSidebar()
+	public function closeSidebar(): void
 	{
 		if ($this->executeJS('return window.getComputedStyle(document.querySelector("#sidebarmenu .sidebar-item-title"), null).display !== "none"')) {
 			$this->waitForElementClickable('#menu-collapse');
@@ -124,7 +124,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function clickDPToolbarButton($button)
+	public function clickDPToolbarButton($button): void
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
@@ -136,7 +136,7 @@ class DPBrowser extends WebDriver
 		$this->wait(0.5);
 	}
 
-	public function clickJoomlaToolbarButton($button, $acceptPopup = false)
+	public function clickJoomlaToolbarButton($button, $acceptPopup = false): void
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
 		// Wait is needed here as on J4 buttons work after a certain time
@@ -146,7 +146,7 @@ class DPBrowser extends WebDriver
 		if ($acceptPopup) {
 			try {
 				$this->acceptPopup();
-			} catch (NoSuchAlertException $e) {
+			} catch (NoSuchAlertException) {
 				// On Joomla 5 we have a normal dialog
 				$this->click('Yes');
 			}
@@ -165,23 +165,24 @@ class DPBrowser extends WebDriver
 	 *
 	 * @throws \Codeception\Exception\ModuleException
 	 */
-	public function fillFieldNoClear($field, $value)
+	public function fillFieldNoClear($field, $value): void
 	{
 		$this->pressKey($field, ['ctrl', 'a'], $value, WebDriverKeys::TAB);
 	}
 
-	public function setExtensionParam($key, $value, $extension)
+	public function setExtensionParam($key, $value, $extension): void
 	{
 		/** @var DPDb $db */
 		$db     = $this->getModule(DPDb::class);
 		$params = $db->grabFromDatabase('extensions', 'params', ['name' => $extension]);
 
-		$params       = json_decode($params);
+		$params       = json_decode((string) $params);
 		$params->$key = $value;
+
 		$db->updateInDatabase('extensions', ['params' => json_encode($params)], ['name' => $extension]);
 	}
 
-	public function doAdministratorLogin($user = null, $password = null, $useSnapshot = true)
+	public function doAdministratorLogin($user = null, $password = null, $useSnapshot = true): void
 	{
 		if (is_null($user)) {
 			$user = $this->config['username'];
@@ -213,7 +214,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function doAdministratorLogout($user = null)
+	public function doAdministratorLogout($user = null): void
 	{
 		$this->click('User Menu');
 		$this->click('Log out');
@@ -227,7 +228,7 @@ class DPBrowser extends WebDriver
 		$this->deleteSessionSnapshot('back' . $user);
 	}
 
-	public function doFrontEndLogin($user = null, $password = null, $useSnapshot = true)
+	public function doFrontEndLogin($user = null, $password = null, $useSnapshot = true): void
 	{
 		if (is_null($user)) {
 			$user = $this->config['username'];
@@ -254,7 +255,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function doFrontendLogout($user = null)
+	public function doFrontendLogout($user = null): void
 	{
 		$this->amOnPage('/index.php?option=com_users&view=login');
 		$this->click('Log out');
@@ -268,7 +269,7 @@ class DPBrowser extends WebDriver
 		$this->deleteSessionSnapshot('front' . $user);
 	}
 
-	public function checkForPhpNoticesOrWarnings($page = null)
+	public function checkForPhpNoticesOrWarnings($page = null): void
 	{
 		if ($page) {
 			$this->amOnPage($page);
@@ -284,13 +285,13 @@ class DPBrowser extends WebDriver
 			$this->dontSeeInPageSource('<b>Warning</b>:');
 			$this->dontSeeInPageSource('Strict standards:');
 			$this->dontSeeInPageSource('<b>Strict standards</b>:');
-			$this->dontSeeInPageSource('The requested page can\'t be found');
-		} catch (ModuleException $e) {
+			$this->dontSeeInPageSource("The requested page can't be found");
+		} catch (ModuleException) {
 			// Ignore as it happens when an error occurs before a page is opened
 		}
 	}
 
-	public function searchForItem($name = null)
+	public function searchForItem($name = null): void
 	{
 		if ($name) {
 			$this->fillField('#filter_search', $name);
@@ -302,16 +303,16 @@ class DPBrowser extends WebDriver
 		$this->click('Clear', ['xpath' => "//button[@type='button']"]);
 	}
 
-	public function checkForJsErrors()
+	public function checkForJsErrors(): void
 	{
 		try {
 			$logs = $this->webDriver->manage()->getLog('browser');
-		} catch (\Exception $e) {
-			if (strpos($e->getMessage(), 'HTTP method not allowed') !== -1) {
+		} catch (\Exception $exception) {
+			if (strpos($exception->getMessage(), 'HTTP method not allowed') !== -1) {
 				return;
 			}
 
-			throw $e;
+			throw $exception;
 		}
 
 		if (!is_array($logs)) {
@@ -320,17 +321,17 @@ class DPBrowser extends WebDriver
 
 		foreach ($logs as $log) {
 			// Ugly hack for event creation JS error when save during a similar event ajax request
-			if (strpos($log['message'], 'option=com_dpcalendar&view=form&id=0')) {
+			if (strpos((string) $log['message'], 'option=com_dpcalendar&view=form&id=0')) {
 				continue;
 			}
 
 			// Only look for internal JS errors
-			if (strpos($log['message'], $this->_getConfig()['url']) !== 0) {
+			if (!str_starts_with((string) $log['message'], (string) $this->_getConfig()['url'])) {
 				continue;
 			}
 
 			// J4 throws some CORS warnings
-			if (strpos($log['message'], 'The Cross-Origin-Opener-Policy header has been ignored') !== 0) {
+			if (!str_starts_with((string) $log['message'], 'The Cross-Origin-Opener-Policy header has been ignored')) {
 				continue;
 			}
 

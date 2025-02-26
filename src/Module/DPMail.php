@@ -25,102 +25,102 @@ class DPMail extends Module
 		$this->setClientFactory(new CurlClientFactory());
 	}
 
-	public function clearEmails()
+	public function clearEmails(): void
 	{
 		$this->getClientFactory()->create()->delete($this->_getConfig('url') . '/messages');
 	}
 
-	public function seeNumberOfMails($count)
+	public function seeNumberOfMails($count): void
 	{
-		$mails = $this->getMails();
+		$mails = $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data;
 
 		$this->assertEquals($count, count($mails), print_r($mails, true));
 	}
 
-	public function seeInEmailSubjects($text)
+	public function seeInEmailSubjects($text): void
 	{
 		$subjects = [];
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$subjects[] = $email->subject;
 		}
 
 		$this->assertContains($text, $subjects, print_r($subjects, true));
 	}
 
-	public function seeInEmails($text)
+	public function seeInEmails(string $text): void
 	{
 		$mailContents = '';
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
 
 		$this->assertStringContainsStringIgnoringCase($text, $mailContents, $mailContents);
 	}
 
-	public function dontSeeInEmails($text)
+	public function dontSeeInEmails(string $text): void
 	{
 		$mailContents = '';
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.html')->dp->body;
 		}
 
 		$this->assertStringNotContainsStringIgnoringCase($text, $mailContents, $mailContents);
 	}
 
-	public function seeSenderInMail($sender)
+	public function seeSenderInMail(string $sender): void
 	{
 		$senders = [];
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$senders[] = $email->sender;
 		}
 
 		$this->assertContains('<' . $sender . '>', $senders, print_r($senders, true));
 	}
 
-	public function dontSeeSenderInMail($sender)
+	public function dontSeeSenderInMail(string $sender): void
 	{
 		$senders = [];
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$senders[] = $email->sender;
 		}
 
 		$this->assertNotContains('<' . $sender . '>', $senders, print_r($senders, true));
 	}
 
-	public function seeInRecipients($recipient)
+	public function seeInRecipients(string $recipient): void
 	{
 		$recipients = [];
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$recipients = array_merge($recipients, $email->recipients);
 		}
 
 		$this->assertContains('<' . $recipient . '>', $recipients, print_r($recipients, true));
 	}
 
-	public function dontSeeInRecipients($recipient)
+	public function dontSeeInRecipients(string $recipient): void
 	{
 		$recipients = [];
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$recipients = array_merge($recipients, $email->recipients);
 		}
 
 		$this->assertNotContains('<' . $recipient . '>', $recipients, print_r($recipients, true));
 	}
 
-	public function hasAttachmentsInMails($fileName)
+	public function hasAttachmentsInMails(string $fileName): void
 	{
 		$mailContents = '';
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
 
 		$this->assertStringContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents, $mailContents);
 	}
 
-	public function hasNotAttachmentsInMails($fileName)
+	public function hasNotAttachmentsInMails(string $fileName): void
 	{
 		$mailContents = '';
-		foreach ($this->getMails() as $email) {
+		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$mailContents .= $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages/' . $email->id . '.source')->dp->body;
 		}
 

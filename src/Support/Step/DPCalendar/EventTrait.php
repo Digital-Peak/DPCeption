@@ -36,17 +36,17 @@ trait EventTrait
 
 		// Old price structure
 		if (\array_key_exists('price', $event) && \is_array($event['price']) && \array_key_exists('value', $event['price'])) {
-			$event['price']['label']       = $event['price']['label'] ?? [''];
-			$event['price']['description'] = $event['price']['description'] ?? [''];
+			$event['price']['label'] ??= [''];
+			$event['price']['description'] ??= [''];
 			$event['price']                = json_encode($event['price']);
 		}
 
 		// New price structure
 		if (\array_key_exists('price', $event) && \is_array($event['price']) && !\array_key_exists('value', $event['price'])) {
 			foreach ($event['price'] as $key => $price) {
-				$price['label']                 = $price['label'] ?? '';
-				$price['description']           = $price['description'] ?? '';
-				$price['currency']              = $price['currency'] ?? 'EUR';
+				$price['label'] ??= '';
+				$price['description'] ??= '';
+				$price['currency'] ??= 'EUR';
 				$event['price']['price' . $key] = $price;
 				unset($event['price'][$key]);
 			}
@@ -57,9 +57,9 @@ trait EventTrait
 		// Renamed price field with prices
 		if (\array_key_exists('prices', $event) && \is_array($event['prices']) && !\array_key_exists('value', $event['prices'])) {
 			foreach ($event['prices'] as $key => $price) {
-				$price['label']                   = $price['label'] ?? '';
-				$price['description']             = $price['description'] ?? '';
-				$price['currency']                = $price['currency'] ?? 'EUR';
+				$price['label'] ??= '';
+				$price['description'] ??= '';
+				$price['currency'] ??= 'EUR';
 				$event['prices']['prices' . $key] = $price;
 				unset($event['prices'][$key]);
 			}
@@ -69,11 +69,11 @@ trait EventTrait
 
 		if (isset($event['booking_options']) && \is_array($event['booking_options'])) {
 			foreach ($event['booking_options'] as $key => $price) {
-				$price['label']                                     = $price['label'] ?? '';
-				$price['description']                               = $price['description'] ?? '';
-				$price['currency']                                  = $price['currency'] ?? 'EUR';
-				$price['amount']                                    = $price['amount'] ?? 2;
-				$price['min_amount']                                = $price['min_amount'] ?? 0;
+				$price['label'] ??= '';
+				$price['description'] ??= '';
+				$price['currency'] ??= 'EUR';
+				$price['amount'] ??= 2;
+				$price['min_amount'] ??= 0;
 				$event['booking_options']['booking_options' . $key] = $price;
 				unset($event['booking_options'][$key]);
 			}

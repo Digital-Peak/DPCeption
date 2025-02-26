@@ -11,7 +11,7 @@ class ContactPage
 {
 	public static $url = '/index.php?option=com_contact&view=contact';
 
-	public static function getDetailsUrl(string $contactId)
+	public static function getDetailsUrl(string $contactId): string
 	{
 		return self::$url . '&id=' . $contactId;
 	}
