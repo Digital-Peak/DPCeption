@@ -48,7 +48,7 @@ class DPDb extends Db
 		return parent::grabFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
-	public function grabColumnFromDatabase($table, string $column, array $criteria = null): array
+	public function grabColumnFromDatabase($table, string $column, array $criteria = []): array
 	{
 		return parent::grabColumnFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
