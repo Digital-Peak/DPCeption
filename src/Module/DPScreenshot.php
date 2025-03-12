@@ -53,7 +53,7 @@ class DPScreenshot extends Module
 		imagedestroy($img);
 	}
 
-	private function takeScreenshot(string $fileName, $selector, array $dimensions = null): string
+	private function takeScreenshot(string $fileName, $selector, ?array $dimensions = null): string
 	{
 		$root = $this->_getConfig('screenshot_dir') . '/';
 		if (!is_dir(dirname($root . $fileName))) {
