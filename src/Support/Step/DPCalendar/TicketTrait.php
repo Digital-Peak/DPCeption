@@ -43,8 +43,8 @@ trait TicketTrait
 		}
 
 		if (!$this->hasColumn('dpcalendar_tickets', 'prename')) {
-			$data['name'] = $data['prename'] . ' ' . $data['name'];
-			unset($data['prename']);
+			$ticket['name'] = $ticket['prename'] . ' ' . $ticket['name'];
+			unset($ticket['prename']);
 		}
 
 		$ticket['id'] = $this->haveInDatabase('dpcalendar_tickets', $ticket);

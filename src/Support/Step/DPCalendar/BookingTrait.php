@@ -51,8 +51,8 @@ trait BookingTrait
 		}
 
 		if (!$this->hasColumn('dpcalendar_bookings', 'prename')) {
-			$data['name'] = $data['prename'] . ' ' . $data['name'];
-			unset($data['prename']);
+			$booking['name'] = $booking['prename'] . ' ' . $booking['name'];
+			unset($booking['prename']);
 		}
 
 		$booking['id'] = $this->haveInDatabase('dpcalendar_bookings', $booking);
