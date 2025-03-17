@@ -13,7 +13,7 @@ class DPScreenshot extends Module
 {
 	protected array $requiredFields = ['screenshot_dir'];
 
-	public function makeScreenshot($fileName, $selector, ?array $pictureSize, $windowSize = false)
+	public function makeScreenshot(string $fileName, $selector, ?array $pictureSize, $windowSize = false): string
 	{
 		/** @var DPBrowser $browser */
 		$browser = $this->getModule(DPBrowser::class);

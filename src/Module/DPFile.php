@@ -20,10 +20,11 @@ class DPFile extends Module
 		$this->assertGreaterThan(1, filesize($this->getFileDirectory($fileName)));
 	}
 
-	public function seeFileExists($fileName): void
+	public function seeFileExists(string $fileName): void
 	{
 		for ($i = 0; $i < 5; $i++) {
-			if ($this->getFileDirectory($fileName)) {
+			$dir = $this->getFileDirectory($fileName);
+			if ($dir !== '' && $dir !== '0') {
 				break;
 			}
 			sleep(1);
