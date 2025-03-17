@@ -17,7 +17,8 @@ trait TicketTrait
 	{
 		$ticket = [
 			'uid'       => 'TICKET-UID',
-			'name'      => 'John Doo',
+			'prename'   => 'John',
+			'name'      => 'Doo',
 			'email'     => 'john@example.com',
 			'country'   => 'US',
 			'province'  => 'Test County',
@@ -39,6 +40,11 @@ trait TicketTrait
 		$shortCode = $ticket['country'];
 		if ($ticket['country']) {
 			$ticket['country'] = $this->grabFromDatabase('dpcalendar_countries', 'id', ['short_code' => $ticket['country']]);
+		}
+
+		if (!$this->hasColumn('dpcalendar_tickets', 'prename')) {
+			$data['name'] = $data['prename'] . ' ' . $data['name'];
+			unset($data['prename']);
 		}
 
 		$ticket['id'] = $this->haveInDatabase('dpcalendar_tickets', $ticket);

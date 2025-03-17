@@ -62,4 +62,14 @@ class DPDb extends Db
 	{
 		return parent::grabNumRecords($this->_getConfig('prefix') . $table, $criteria);
 	}
+
+	/**
+	 * Returns if the given table has the given column. Can be used for multiple versions compatibility.
+	 */
+	public function hasColumn(string $table, $column): bool
+	{
+		$columns = $this->_getDriver()->executeQuery('DESCRIBE ' . $this->_getConfig('prefix') . $table, [])->fetchAll(\PDO::FETCH_COLUMN);
+
+		return \in_array($column, $columns);
+	}
 }

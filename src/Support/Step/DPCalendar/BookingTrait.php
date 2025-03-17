@@ -17,7 +17,8 @@ trait BookingTrait
 	{
 		$booking = [
 			'uid'       => 'BOOKING-UID',
-			'name'      => 'John Doo',
+			'prename'   => 'John',
+			'name'      => 'Doo',
 			'email'     => 'john@example.com',
 			'country'   => 'US',
 			'province'  => 'Test County',
@@ -47,6 +48,11 @@ trait BookingTrait
 
 		if (!empty($booking['price']) && empty($booking['currency'])) {
 			$booking['currency'] = 'EUR';
+		}
+
+		if (!$this->hasColumn('dpcalendar_bookings', 'prename')) {
+			$data['name'] = $data['prename'] . ' ' . $data['name'];
+			unset($data['prename']);
 		}
 
 		$booking['id'] = $this->haveInDatabase('dpcalendar_bookings', $booking);
