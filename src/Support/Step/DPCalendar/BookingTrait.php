@@ -42,8 +42,8 @@ trait BookingTrait
 			$booking['country'] = $this->grabFromDatabase('dpcalendar_countries', 'id', ['short_code' => $booking['country']]);
 		}
 
-		if (!empty($booking['price']) && empty($booking['processor'])) {
-			$booking['processor'] = 'manual-1';
+		if (!empty($booking['price']) && empty($booking['payment_provider'])) {
+			$booking['payment_provider'] = 'manual-1';
 		}
 
 		if (!empty($booking['price']) && empty($booking['currency'])) {
@@ -53,6 +53,11 @@ trait BookingTrait
 		if (!$this->hasColumn('dpcalendar_bookings', 'prename')) {
 			$booking['name'] = $booking['prename'] . ' ' . $booking['name'];
 			unset($booking['prename']);
+		}
+
+		if (!empty($booking['payment_provider']) && !$this->hasColumn('dpcalendar_bookings', 'payment_provider')) {
+			$booking['processor'] = $booking['payment_provider'];
+			unset($booking['payment_provider']);
 		}
 
 		$booking['id'] = $this->haveInDatabase('dpcalendar_bookings', $booking);
