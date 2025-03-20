@@ -13,6 +13,8 @@ class DPDb extends Db
 {
 	protected array $requiredFields = ['prefix'];
 
+	private $columnCache = [];
+
 	public function deleteFromDatabase(string $table, array $criteria): void
 	{
 		$this->_getDriver()->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
@@ -68,8 +70,13 @@ class DPDb extends Db
 	 */
 	public function hasColumn(string $table, $column): bool
 	{
-		$columns = $this->_getDriver()->executeQuery('DESCRIBE ' . $this->_getConfig('prefix') . $table, [])->fetchAll(\PDO::FETCH_COLUMN);
+		if (!\array_key_exists($table . $column, $this->columnCache)) {
+			codecept_debug('Grab columns for table ' . $table);
+			$columns = $this->_getDriver()->executeQuery('DESCRIBE ' . $this->_getConfig('prefix') . $table, [])->fetchAll(\PDO::FETCH_COLUMN);
 
-		return \in_array($column, $columns);
+			$this->columnCache[$table . $column] = \in_array($column, $columns);
+		}
+
+		return $this->columnCache[$table . $column];
 	}
 }
