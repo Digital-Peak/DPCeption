@@ -16,21 +16,21 @@ trait TicketTrait
 	public function createTicket(?array $data = null): array
 	{
 		$ticket = [
-			'uid'       => 'TICKET-UID',
-			'prename'   => 'John',
-			'name'      => 'Doo',
-			'email'     => 'john@example.com',
-			'country'   => 'US',
-			'province'  => 'Test County',
-			'city'      => 'Test City',
-			'zip'       => 'Test Zip',
-			'street'    => 'Test Street',
-			'number'    => 'Test Number',
-			'telephone' => '123',
-			'latitude'  => 1,
-			'longitude' => 1,
-			'created'   => (new \DateTime())->format('Y-m-d H:i:s'),
-			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
+			'uid'        => 'TICKET-UID',
+			'first_name' => 'John',
+			'name'       => 'Doo',
+			'email'      => 'john@example.com',
+			'country'    => 'US',
+			'province'   => 'Test County',
+			'city'       => 'Test City',
+			'zip'        => 'Test Zip',
+			'street'     => 'Test Street',
+			'number'     => 'Test Number',
+			'telephone'  => '123',
+			'latitude'   => 1,
+			'longitude'  => 1,
+			'created'    => (new \DateTime())->format('Y-m-d H:i:s'),
+			'user_id'    => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
 		if (\is_array($data)) {
@@ -42,9 +42,9 @@ trait TicketTrait
 			$ticket['country'] = $this->grabFromDatabase('dpcalendar_countries', 'id', ['short_code' => $ticket['country']]);
 		}
 
-		if (!$this->hasColumn('dpcalendar_tickets', 'prename')) {
-			$ticket['name'] = $ticket['prename'] . ' ' . $ticket['name'];
-			unset($ticket['prename']);
+		if (!$this->hasColumn('dpcalendar_tickets', 'first_name')) {
+			$ticket['name'] = $ticket['first_name'] . ' ' . $ticket['name'];
+			unset($ticket['first_name']);
 		}
 
 		$ticket['id'] = $this->haveInDatabase('dpcalendar_tickets', $ticket);

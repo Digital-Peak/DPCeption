@@ -16,21 +16,21 @@ trait BookingTrait
 	public function createBooking(?array $data = null): array
 	{
 		$booking = [
-			'uid'       => 'BOOKING-UID',
-			'prename'   => 'John',
-			'name'      => 'Doo',
-			'email'     => 'john@example.com',
-			'country'   => 'US',
-			'province'  => 'Test County',
-			'city'      => 'Test City',
-			'zip'       => 'Test Zip',
-			'street'    => 'Test Street',
-			'number'    => 'Test Number',
-			'telephone' => '123',
-			'latitude'  => 1,
-			'longitude' => 1,
-			'book_date' => (new \DateTime())->format('Y-m-d H:i:s'),
-			'user_id'   => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
+			'uid'        => 'BOOKING-UID',
+			'first_name' => 'John',
+			'name'       => 'Doo',
+			'email'      => 'john@example.com',
+			'country'    => 'US',
+			'province'   => 'Test County',
+			'city'       => 'Test City',
+			'zip'        => 'Test Zip',
+			'street'     => 'Test Street',
+			'number'     => 'Test Number',
+			'telephone'  => '123',
+			'latitude'   => 1,
+			'longitude'  => 1,
+			'book_date'  => (new \DateTime())->format('Y-m-d H:i:s'),
+			'user_id'    => $this->grabFromDatabase('users', 'id', ['username' => 'admin'])
 		];
 
 		if (\is_array($data)) {
@@ -50,9 +50,9 @@ trait BookingTrait
 			$booking['currency'] = 'EUR';
 		}
 
-		if (!$this->hasColumn('dpcalendar_bookings', 'prename')) {
-			$booking['name'] = $booking['prename'] . ' ' . $booking['name'];
-			unset($booking['prename']);
+		if (!$this->hasColumn('dpcalendar_bookings', 'first_name')) {
+			$booking['name'] = $booking['first_name'] . ' ' . $booking['name'];
+			unset($booking['first_name']);
 		}
 
 		if (!empty($booking['payment_provider']) && !$this->hasColumn('dpcalendar_bookings', 'payment_provider')) {
