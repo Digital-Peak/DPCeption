@@ -42,11 +42,6 @@ trait TicketTrait
 			$ticket['country'] = $this->grabFromDatabase('dpcalendar_countries', 'id', ['short_code' => $ticket['country']]);
 		}
 
-		if (!$this->hasColumn('dpcalendar_tickets', 'first_name')) {
-			$ticket['name'] = $ticket['first_name'] . ' ' . $ticket['name'];
-			unset($ticket['first_name']);
-		}
-
 		$ticket['id'] = $this->haveInDatabase('dpcalendar_tickets', $ticket);
 
 		if ($shortCode) {

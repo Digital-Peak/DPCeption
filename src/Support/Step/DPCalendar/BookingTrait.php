@@ -50,16 +50,6 @@ trait BookingTrait
 			$booking['currency'] = 'EUR';
 		}
 
-		if (!$this->hasColumn('dpcalendar_bookings', 'first_name')) {
-			$booking['name'] = $booking['first_name'] . ' ' . $booking['name'];
-			unset($booking['first_name']);
-		}
-
-		if (!empty($booking['payment_provider']) && !$this->hasColumn('dpcalendar_bookings', 'payment_provider')) {
-			$booking['processor'] = $booking['payment_provider'];
-			unset($booking['payment_provider']);
-		}
-
 		$booking['id'] = $this->haveInDatabase('dpcalendar_bookings', $booking);
 
 		if ($shortCode) {

@@ -34,27 +34,7 @@ trait EventTrait
 			$event = array_merge($event, $data);
 		}
 
-		// Old price structure
-		if (\array_key_exists('price', $event) && \is_array($event['price']) && \array_key_exists('value', $event['price'])) {
-			$event['price']['label'] ??= [''];
-			$event['price']['description'] ??= [''];
-			$event['price']                = json_encode($event['price']);
-		}
-
-		// New price structure
-		if (\array_key_exists('price', $event) && \is_array($event['price']) && !\array_key_exists('value', $event['price'])) {
-			foreach ($event['price'] as $key => $price) {
-				$price['label'] ??= '';
-				$price['description'] ??= '';
-				$price['currency'] ??= 'EUR';
-				$event['price']['price' . $key] = $price;
-				unset($event['price'][$key]);
-			}
-
-			$event['price'] = json_encode($event['price']);
-		}
-
-		// Renamed price field with prices
+		// Normalize prices
 		if (\array_key_exists('prices', $event) && \is_array($event['prices']) && !\array_key_exists('value', $event['prices'])) {
 			foreach ($event['prices'] as $key => $price) {
 				$price['label'] ??= '';
@@ -67,6 +47,7 @@ trait EventTrait
 			$event['prices'] = json_encode($event['prices']);
 		}
 
+		// Normalize booking options
 		if (isset($event['booking_options']) && \is_array($event['booking_options'])) {
 			foreach ($event['booking_options'] as $key => $price) {
 				$price['label'] ??= '';
@@ -89,11 +70,11 @@ trait EventTrait
 			$event['tickets_discount'] = json_encode($event['tickets_discount']);
 		}
 
-		if (isset($event['earlybird_discount']) && is_array($event['earlybird_discount'])) {
+		if (isset($event['earlybird_discount']) && \is_array($event['earlybird_discount'])) {
 			$event['earlybird_discount'] = json_encode($event['earlybird_discount']);
 		}
 
-		if (isset($event['user_discount']) && is_array($event['user_discount'])) {
+		if (isset($event['user_discount']) && \is_array($event['user_discount'])) {
 			$event['user_discount'] = json_encode($event['user_discount']);
 		}
 
