@@ -32,7 +32,7 @@ class DPBrowser extends WebDriver
 		$config = $moduleName ? $this->getModule($moduleName)->_getConfig() : $this->config;
 
 		// When no module is given and the array key doesn't exist, fallback to the current module configuration
-		if ($element && !$moduleName && !array_key_exists($element, $config)) {
+		if ($element && !$moduleName && !\array_key_exists($element, $config)) {
 			$moduleName = self::class;
 		}
 
@@ -72,6 +72,7 @@ class DPBrowser extends WebDriver
 					$this->click($permission['group']);
 				}
 
+				$this->makeVisible('#jform_rules_' . $permission['action'] . '_' . $groupId);
 				$this->selectOption('#jform_rules_' . $permission['action'] . '_' . $groupId, $permission['allowed'] ? 1 : 0);
 			}
 		}
@@ -95,7 +96,7 @@ class DPBrowser extends WebDriver
 		parent::amOnPage($link);
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
-		if ($checkForErrors && strpos((string) $link, 'com_dp')) {
+		if ($checkForErrors && strpos((string)$link, 'com_dp')) {
 			$this->checkForPhpNoticesOrWarnings();
 			$this->checkForJsErrors();
 		}
@@ -163,7 +164,7 @@ class DPBrowser extends WebDriver
 	 * @param $field
 	 * @param $value
 	 *
-	 * @throws \Codeception\Exception\ModuleException
+	 * @throws ModuleException
 	 */
 	public function fillFieldNoClear($field, $value): void
 	{
@@ -176,7 +177,7 @@ class DPBrowser extends WebDriver
 		$db     = $this->getModule(DPDb::class);
 		$params = $db->grabFromDatabase('extensions', 'params', ['name' => $extension]);
 
-		$params       = json_decode((string) $params);
+		$params       = json_decode((string)$params);
 		$params->$key = $value;
 
 		$db->updateInDatabase('extensions', ['params' => json_encode($params)], ['name' => $extension]);
@@ -184,11 +185,11 @@ class DPBrowser extends WebDriver
 
 	public function doAdministratorLogin($user = null, $password = null, $useSnapshot = true): void
 	{
-		if (is_null($user)) {
+		if (\is_null($user)) {
 			$user = $this->config['username'];
 		}
 
-		if (is_null($password)) {
+		if (\is_null($password)) {
 			$password = $this->config['password'];
 		}
 
@@ -221,7 +222,7 @@ class DPBrowser extends WebDriver
 		$this->waitForElement('#mod-login-username');
 		$this->waitForText('Log in');
 
-		if (is_null($user)) {
+		if (\is_null($user)) {
 			$user = $this->_getConfig('username');
 		}
 
@@ -230,11 +231,11 @@ class DPBrowser extends WebDriver
 
 	public function doFrontEndLogin($user = null, $password = null, $useSnapshot = true): void
 	{
-		if (is_null($user)) {
+		if (\is_null($user)) {
 			$user = $this->config['username'];
 		}
 
-		if (is_null($password)) {
+		if (\is_null($password)) {
 			$password = $this->config['password'];
 		}
 
@@ -262,7 +263,7 @@ class DPBrowser extends WebDriver
 		$this->amOnPage('/index.php?option=com_users&view=login');
 		$this->waitForElement('.login');
 
-		if (is_null($user)) {
+		if (\is_null($user)) {
 			$user = $this->_getConfig('username');
 		}
 
@@ -315,23 +316,23 @@ class DPBrowser extends WebDriver
 			throw $exception;
 		}
 
-		if (!is_array($logs)) {
+		if (!\is_array($logs)) {
 			return;
 		}
 
 		foreach ($logs as $log) {
 			// Ugly hack for event creation JS error when save during a similar event ajax request
-			if (strpos((string) $log['message'], 'option=com_dpcalendar&view=form&id=0')) {
+			if (strpos((string)$log['message'], 'option=com_dpcalendar&view=form&id=0')) {
 				continue;
 			}
 
 			// Only look for internal JS errors
-			if (!str_starts_with((string) $log['message'], (string) $this->_getConfig()['url'])) {
+			if (!str_starts_with((string)$log['message'], (string)$this->_getConfig()['url'])) {
 				continue;
 			}
 
 			// J4 throws some CORS warnings
-			if (!str_starts_with((string) $log['message'], 'The Cross-Origin-Opener-Policy header has been ignored')) {
+			if (!str_starts_with((string)$log['message'], 'The Cross-Origin-Opener-Policy header has been ignored')) {
 				continue;
 			}
 
