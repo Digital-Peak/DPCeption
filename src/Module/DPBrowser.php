@@ -24,8 +24,12 @@ class DPBrowser extends WebDriver
 		'timeout',
 		'downloads',
 		'home_dir',
-		'joomla_version'
+		'joomla_version',
+		'extension_dir',
+		'web_logs_error_file'
 	];
+
+	private static array $processedLogs = [];
 
 	public function getConfiguration($element = null, $moduleName = null)
 	{
@@ -289,6 +293,36 @@ class DPBrowser extends WebDriver
 			$this->dontSeeInPageSource("The requested page can't be found");
 		} catch (ModuleException) {
 			// Ignore as it happens when an error occurs before a page is opened
+		}
+
+		$webLogsFile = $this->getConfiguration('web_logs_error_file');
+		if (!file_exists($webLogsFile)) {
+			return;
+		}
+
+		$logs = file_get_contents($webLogsFile);
+		if (empty($logs)) {
+			return;
+		}
+
+		file_put_contents($webLogsFile, '');
+
+		$extensionDir = $this->getConfiguration('extension_dir');
+
+		$logs = array_filter(explode("\n", $logs));
+		foreach ($logs as $log) {
+			if (\array_key_exists($log, static::$processedLogs)) {
+				continue;
+			}
+
+			// Do not process errors outside of the extension
+			if (!str_contains($log, '/' . basename($extensionDir) . '/')) {
+				static::$processedLogs[$log] = $log;
+				continue;
+			}
+
+			$this->assertEmpty($log, $log);
+			static::$processedLogs[$log] = $log;
 		}
 	}
 
