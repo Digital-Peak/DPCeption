@@ -9,5 +9,5 @@ namespace DigitalPeak\Support\Page\Joomla\Administrator;
 
 class UsersPage
 {
-	public static $url = '/administrator/index.php?option=com_users&view=users';
+	public static string $url = '/administrator/index.php?option=com_users&view=users';
 }

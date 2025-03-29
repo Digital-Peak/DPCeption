@@ -30,14 +30,14 @@ class DPMail extends Module
 		$this->getClientFactory()->create()->delete($this->_getConfig('url') . '/messages');
 	}
 
-	public function seeNumberOfMails($count): void
+	public function seeNumberOfMails(int $count): void
 	{
 		$mails = $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data;
 
-		$this->assertEquals($count, count($mails), print_r($mails, true));
+		$this->assertEquals($count, \count($mails), print_r($mails, true));
 	}
 
-	public function seeInEmailSubjects($text): void
+	public function seeInEmailSubjects(string $text): void
 	{
 		$subjects = [];
 		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
@@ -125,10 +125,5 @@ class DPMail extends Module
 		}
 
 		$this->assertStringNotContainsStringIgnoringCase('Content-Disposition: attachment; filename=' . $fileName, $mailContents);
-	}
-
-	private function getMails(): array
-	{
-		return $this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data;
 	}
 }

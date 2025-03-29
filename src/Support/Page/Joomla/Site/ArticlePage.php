@@ -9,7 +9,7 @@ namespace DigitalPeak\Support\Page\Joomla\Site;
 
 class ArticlePage
 {
-	public static $url = '/index.php?option=com_content&view=article';
+	public static string $url = '/index.php?option=com_content&view=article';
 
 	public static function getDetailsUrl(string $articleId): string
 	{

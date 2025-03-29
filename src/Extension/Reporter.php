@@ -11,6 +11,7 @@ use Codeception\Event\SuiteEvent;
 use Codeception\Event\TestEvent;
 use Codeception\Lib\Interfaces\ConsolePrinter;
 use Codeception\Subscriber\Console;
+use Codeception\Suite;
 use Codeception\Test\Descriptor;
 use PHPUnit\Framework\SelfDescribing;
 
@@ -27,7 +28,12 @@ class Reporter extends Console implements ConsolePrinter
 
 	public function beforeSuite(SuiteEvent $event): void
 	{
-		$this->total = $event->getSuite()->getTestCount();
+		$suite = $event->getSuite();
+		if (!$suite instanceof Suite) {
+			return;
+		}
+
+		$this->total = $suite->getTestCount();
 
 		$this->messageFactory->message('Memory info: (script/total/peak)')->writeln();
 
@@ -39,7 +45,7 @@ class Reporter extends Console implements ConsolePrinter
 		$this->counter++;
 		$this->memory = memory_get_usage();
 
-		if (function_exists('memory_reset_peak_usage')) {
+		if (\function_exists('memory_reset_peak_usage')) {
 			memory_reset_peak_usage();
 		}
 
@@ -51,7 +57,11 @@ class Reporter extends Console implements ConsolePrinter
 		$prefix = $this->output->isInteractive() && !$this->isDetailed($test) && $inProgress ? '- ' : '';
 
 		$testString = '(' . $this->counter . '/' . $this->total . ') ' . Descriptor::getTestAsString($test);
-		$testString = preg_replace('#^([^:]+):\s#', sprintf('<focus>$1%s</focus> ', $this->chars['of']), $testString);
+		$testString = (string)preg_replace('#^([^:]+):\s#', \sprintf('<focus>$1%s</focus> ', $this->chars['of']), $testString);
+
+		if (!$testString) {
+			return;
+		}
 
 		$this->messageFactory->message($testString)->prepend($prefix)->write();
 	}

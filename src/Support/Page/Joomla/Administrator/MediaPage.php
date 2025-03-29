@@ -9,7 +9,7 @@ namespace DigitalPeak\Support\Page\Joomla\Administrator;
 
 class MediaPage
 {
-	public static $mediaUrl      = '/administrator/index.php?option=com_media&view=media';
-	public static $imageEditFile = '/joomla_black.png';
-	public static $imageEditUrl  = '/administrator/index.php?option=com_media&view=file&mediatypes=0,1,2,3&path=local-images:/joomla_black.png';
+	public static string $mediaUrl      = '/administrator/index.php?option=com_media&view=media';
+	public static string $imageEditFile = '/joomla_black.png';
+	public static string $imageEditUrl  = '/administrator/index.php?option=com_media&view=file&mediatypes=0,1,2,3&path=local-images:/joomla_black.png';
 }

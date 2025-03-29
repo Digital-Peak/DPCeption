@@ -13,7 +13,7 @@ class DPScreenshot extends Module
 {
 	protected array $requiredFields = ['screenshot_dir'];
 
-	public function makeScreenshot(string $fileName, $selector, ?array $pictureSize, $windowSize = false): string
+	public function makeScreenshot(string $fileName, string $selector, ?array $pictureSize, mixed $windowSize = false): string
 	{
 		/** @var DPBrowser $browser */
 		$browser = $this->getModule(DPBrowser::class);
@@ -33,31 +33,36 @@ class DPScreenshot extends Module
 	 * 1: Upper left y coordinate 0, 0 is the top left corner of the image.
 	 * 2: Bottom right x coordinate.
 	 * 3: Bottom right y coordinate.
-	 *
-	 * @param $file
-	 * @param $coords
 	 */
-	public function drawRectangle($file, $coords): void
+	public function drawRectangle(string $file, array $coords): void
 	{
 		// Load image
 		$img = imagecreatefrompng($file);
+		if ($img === false) {
+			return;
+		}
+
 		// Transparent red
 		$red = imagecolorallocatealpha($img, 255, 0, 0, 50);
+		if ($red === false) {
+			return;
+		}
 
 		imagesetthickness($img, 5);
 
 		// Draw a white rectangle
 		imagerectangle($img, $coords[0], $coords[1], $coords[2], $coords[3], $red);
+
 		// Save the image (overwrite)
 		imagepng($img, $file);
 		imagedestroy($img);
 	}
 
-	private function takeScreenshot(string $fileName, $selector, ?array $dimensions = null): string
+	private function takeScreenshot(string $fileName, string $selector, ?array $dimensions = null): string
 	{
 		$root = $this->_getConfig('screenshot_dir') . '/';
-		if (!is_dir(dirname($root . $fileName))) {
-			mkdir(dirname($root . $fileName), 0777, true);
+		if (!is_dir(\dirname($root . $fileName))) {
+			mkdir(\dirname($root . $fileName), 0777, true);
 		}
 
 		/** @var DPBrowser $driver */
@@ -91,7 +96,7 @@ class DPScreenshot extends Module
 		$element_src_x = $element->getLocation()->getX();
 		$element_src_y = $element->getLocation()->getY();
 
-		if ($dimensions && count($dimensions) > 2) {
+		if ($dimensions && \count($dimensions) > 2) {
 			$element_src_x += $dimensions[2];
 			$element_src_y += $dimensions[3];
 		}
@@ -99,6 +104,10 @@ class DPScreenshot extends Module
 		// Create image instances
 		$src  = imagecreatefrompng($screenshot);
 		$dest = imagecreatetruecolor($element_width, $element_height);
+
+		if ($src === false || $dest === false) {
+			throw new \Exception('Could not copy element screenshot');
+		}
 
 		// Copy
 		imagecopy($dest, $src, 0, 0, $element_src_x, $element_src_y, $element_width, $element_height);
@@ -131,7 +140,7 @@ class DPScreenshot extends Module
 			$before_top = -1;
 			for ($y = 0; $y < $repeat_y; $y++) {
 				$y_pos = $y * $viewport_height;
-				$driver->executeJS(sprintf('window.scrollTo(%s, %s)', $x_pos, $y_pos));
+				$driver->executeJS(\sprintf('window.scrollTo(%s, %s)', $x_pos, $y_pos));
 				$driver->wait(0.8);
 				$scroll_left = $driver->executeJS("return window.pageXOffset");
 				$scroll_top  = $driver->executeJS("return window.pageYOffset");
@@ -144,6 +153,10 @@ class DPScreenshot extends Module
 					throw new \Exception('Could not save screenshot');
 				}
 				$tmp_image = imagecreatefrompng($tmp_name);
+				if ($tmp_image === false) {
+					return;
+				}
+
 				imagecopy($full_capture, $tmp_image, $scroll_left, $scroll_top, 0, 0, $viewport_width, $viewport_height);
 				imagedestroy($tmp_image);
 				unlink($tmp_name);

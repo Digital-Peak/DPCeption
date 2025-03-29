@@ -13,29 +13,29 @@ class DPDb extends Db
 {
 	protected array $requiredFields = ['prefix'];
 
-	private $columnCache = [];
+	private array $columnCache = [];
 
 	public function deleteFromDatabase(string $table, array $criteria): void
 	{
 		$this->_getDriver()->deleteQueryByCriteria($this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function updateInDatabase($table, array $data, array $criteria = []): void
+	public function updateInDatabase(string $table, array $data, array $criteria = []): void
 	{
 		parent::updateInDatabase($this->_getConfig('prefix') . $table, $data, $criteria);
 	}
 
-	public function haveInDatabase($table, array $data): int
+	public function haveInDatabase(string $table, array $data): int
 	{
 		return parent::haveInDatabase($this->_getConfig('prefix') . $table, $data);
 	}
 
-	public function seeInDatabase($table, array $criteria = []): void
+	public function seeInDatabase(string $table, array $criteria = []): void
 	{
 		parent::seeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function dontSeeInDatabase($table, array $criteria = []): void
+	public function dontSeeInDatabase(string $table, array $criteria = []): void
 	{
 		parent::dontSeeInDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
@@ -45,22 +45,22 @@ class DPDb extends Db
 		return parent::grabEntryFromDatabase($this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function grabFromDatabase($table, string $column, array $criteria = [])
+	public function grabFromDatabase(string $table, string $column, array $criteria = [])
 	{
 		return parent::grabFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
-	public function grabColumnFromDatabase($table, string $column, array $criteria = []): array
+	public function grabColumnFromDatabase(string $table, string $column, array $criteria = []): array
 	{
 		return parent::grabColumnFromDatabase($this->_getConfig('prefix') . $table, $column, $criteria);
 	}
 
-	public function seeNumRecords(int $expectedNumber, $table, array $criteria = []): void
+	public function seeNumRecords(int $expectedNumber, string  $table, array $criteria = []): void
 	{
 		parent::seeNumRecords($expectedNumber, $this->_getConfig('prefix') . $table, $criteria);
 	}
 
-	public function grabNumRecords($table, array $criteria = []): int
+	public function grabNumRecords(string $table, array $criteria = []): int
 	{
 		return parent::grabNumRecords($this->_getConfig('prefix') . $table, $criteria);
 	}
@@ -68,7 +68,7 @@ class DPDb extends Db
 	/**
 	 * Returns if the given table has the given column. Can be used for multiple versions compatibility.
 	 */
-	public function hasColumn(string $table, $column): bool
+	public function hasColumn(string $table, string $column): bool
 	{
 		if (!\array_key_exists($table . $column, $this->columnCache)) {
 			codecept_debug('Grab columns for table ' . $table);

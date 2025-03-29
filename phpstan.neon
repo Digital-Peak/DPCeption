@@ -1,0 +1,8 @@
+includes:
+    - ../DPDocker/code/config/phpstan.neon
+
+parameters:
+	ignoreErrors:
+		-
+			message: '#is used zero times and is not analysed#'
+			path: */src/Support/Step/*Trait.php
