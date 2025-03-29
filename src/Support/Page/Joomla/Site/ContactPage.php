@@ -9,7 +9,7 @@ namespace DigitalPeak\Support\Page\Joomla\Site;
 
 class ContactPage
 {
-	public static $url = '/index.php?option=com_contact&view=contact';
+	public static string $url = '/index.php?option=com_contact&view=contact';
 
 	public static function getDetailsUrl(string $contactId): string
 	{

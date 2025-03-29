@@ -9,8 +9,8 @@ namespace DigitalPeak\Support\Page\Joomla\Administrator;
 
 class TasksPage
 {
-	public static $url = '/administrator/index.php?option=com_scheduler&view=tasks';
+	public static string $url = '/administrator/index.php?option=com_scheduler&view=tasks';
 
-	public static $runButtonLabel   = 'Run Test';
-	public static $completedMessage = 'Status: Completed';
+	public static string $runButtonLabel   = 'Run Test';
+	public static string $completedMessage = 'Status: Completed';
 }

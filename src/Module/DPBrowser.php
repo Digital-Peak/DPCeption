@@ -24,35 +24,33 @@ class DPBrowser extends WebDriver
 		'timeout',
 		'downloads',
 		'home_dir',
-		'joomla_version',
-		'extension_dir',
-		'web_logs_error_file'
+		'joomla_version'
 	];
 
 	private static array $processedLogs = [];
 
-	public function getConfiguration($element = null, $moduleName = null)
+	public function getConfiguration(?string $element = null, ?string $moduleName = null): string
 	{
-		$config = $moduleName ? $this->getModule($moduleName)->_getConfig() : $this->config;
+		$config = $moduleName !== null && $moduleName !== '' && $moduleName !== '0' ? $this->getModule($moduleName)->_getConfig() : $this->config;
 
 		// When no module is given and the array key doesn't exist, fallback to the current module configuration
-		if ($element && !$moduleName && !\array_key_exists($element, $config)) {
+		if ($element && ($moduleName === null || $moduleName === '' || $moduleName === '0') && !\array_key_exists($element, $config)) {
 			$moduleName = self::class;
 		}
 
-		return $element ? $config[$element] : $config;
+		return $element !== null && $element !== '' && $element !== '0' ? ($config[$element] ?? '') : $config;
 	}
 
-	public function setJoomlaGlobalConfigurationOption($oldValue, $newValue): void
+	public function setJoomlaGlobalConfigurationOption(string $oldValue, string $newValue): void
 	{
 		$path = $this->getConfiguration('home_dir') . '/configuration.php';
 		shell_exec('sudo chmod 777 ' . $path);
-		$content = file_get_contents($path);
+		$content = file_get_contents($path) ?: '';
 		$content = str_replace($oldValue, $newValue, $content);
 		file_put_contents($path, $content);
 	}
 
-	public function createDPCategory(string $title, string $component, array $permissions = [], int $parentId = 0)
+	public function createDPCategory(string $title, string $component, array $permissions = [], int $parentId = 0): int
 	{
 		/** @var DPDb $db */
 		$db = $this->getModule(DPDb::class);
@@ -83,18 +81,18 @@ class DPBrowser extends WebDriver
 
 		$this->clickJoomlaToolbarButton('Save & Close');
 
-		return $db->grabFromDatabase('categories', 'id', ['title' => $title, 'extension' => $component]);
+		return (int)$db->grabFromDatabase('categories', 'id', ['title' => $title, 'extension' => $component]);
 	}
 
-	public function enablePlugin($pluginName, $enable = true): void
+	public function enablePlugin(string $pluginName, ?bool $enable = true): void
 	{
 		/** @var DPDb $db */
 		$db = $this->getModule(DPDb::class);
 
-		$db->updateInDatabase('extensions', ['enabled' => $enable ? 1 : 0], ['name' => $pluginName]);
+		$db->updateInDatabase('extensions', ['enabled' => $enable === true ? 1 : 0], ['name' => $pluginName]);
 	}
 
-	public function amOnPage($link, $checkForErrors = true): void
+	public function amOnPage(mixed $link, ?bool $checkForErrors = true): void
 	{
 		$this->executeJS('try { sessionStorage.clear();localStorage.clear(); } catch(error) {}');
 		parent::amOnPage($link);
@@ -112,7 +110,7 @@ class DPBrowser extends WebDriver
 		$this->reloadPage();
 	}
 
-	public function makeVisible($selector): void
+	public function makeVisible(string $selector): void
 	{
 		$this->waitForElement($selector);
 		$this->scrollTo($selector, null, -100);
@@ -129,7 +127,7 @@ class DPBrowser extends WebDriver
 		}
 	}
 
-	public function clickDPToolbarButton($button): void
+	public function clickDPToolbarButton(string $button): void
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
 
@@ -141,14 +139,14 @@ class DPBrowser extends WebDriver
 		$this->wait(0.5);
 	}
 
-	public function clickJoomlaToolbarButton($button, $acceptPopup = false): void
+	public function clickJoomlaToolbarButton(string $button, ?bool $acceptPopup = false): void
 	{
 		$this->waitForJs('return document.readyState == "complete"', 10);
 		// Wait is needed here as on J4 buttons work after a certain time
 		$this->wait(0.5);
 		$this->click($button);
 
-		if ($acceptPopup) {
+		if ($acceptPopup === true) {
 			try {
 				$this->acceptPopup();
 			} catch (NoSuchAlertException) {
@@ -164,18 +162,14 @@ class DPBrowser extends WebDriver
 	/**
 	 * Driver implementation does clear the field which fires a JS change event. See
 	 * http://phptest.club/t/fillfield-triggers-change-event-too-soon/126
-	 *
-	 * @param $field
-	 * @param $value
-	 *
-	 * @throws ModuleException
 	 */
-	public function fillFieldNoClear($field, $value): void
+	public function fillFieldNoClear(string|array $field, string $value): void
 	{
+		// @phpstan-ignore-next-line
 		$this->pressKey($field, ['ctrl', 'a'], $value, WebDriverKeys::TAB);
 	}
 
-	public function setExtensionParam($key, $value, $extension): void
+	public function setExtensionParam(string $key, mixed $value, string  $extension): void
 	{
 		/** @var DPDb $db */
 		$db     = $this->getModule(DPDb::class);
@@ -187,7 +181,7 @@ class DPBrowser extends WebDriver
 		$db->updateInDatabase('extensions', ['params' => json_encode($params)], ['name' => $extension]);
 	}
 
-	public function doAdministratorLogin($user = null, $password = null, $useSnapshot = true): void
+	public function doAdministratorLogin(?string $user = null, ?string  $password = null, ?bool $useSnapshot = true): void
 	{
 		if (\is_null($user)) {
 			$user = $this->config['username'];
@@ -214,12 +208,12 @@ class DPBrowser extends WebDriver
 		$this->click('Log in');
 		$this->waitForElement('.page-title');
 
-		if ($useSnapshot) {
+		if ($useSnapshot === true) {
 			$this->saveSessionSnapshot('back' . $user);
 		}
 	}
 
-	public function doAdministratorLogout($user = null): void
+	public function doAdministratorLogout(?string $user = null): void
 	{
 		$this->click('User Menu');
 		$this->click('Log out');
@@ -233,7 +227,7 @@ class DPBrowser extends WebDriver
 		$this->deleteSessionSnapshot('back' . $user);
 	}
 
-	public function doFrontEndLogin($user = null, $password = null, $useSnapshot = true): void
+	public function doFrontEndLogin(?string $user = null, ?string  $password = null, ?bool $useSnapshot = true): void
 	{
 		if (\is_null($user)) {
 			$user = $this->config['username'];
@@ -255,12 +249,12 @@ class DPBrowser extends WebDriver
 
 		$this->waitForElement('.profile');
 
-		if ($useSnapshot) {
+		if ($useSnapshot === true) {
 			$this->saveSessionSnapshot('front' . $user);
 		}
 	}
 
-	public function doFrontendLogout($user = null): void
+	public function doFrontendLogout(?string $user = null): void
 	{
 		$this->amOnPage('/index.php?option=com_users&view=login');
 		$this->click('Log out');
@@ -274,9 +268,9 @@ class DPBrowser extends WebDriver
 		$this->deleteSessionSnapshot('front' . $user);
 	}
 
-	public function checkForPhpNoticesOrWarnings($page = null): void
+	public function checkForPhpNoticesOrWarnings(?string $page = null): void
 	{
-		if ($page) {
+		if ($page !== null && $page !== '' && $page !== '0') {
 			$this->amOnPage($page);
 		}
 
@@ -296,39 +290,42 @@ class DPBrowser extends WebDriver
 		}
 
 		$webLogsFile = $this->getConfiguration('web_logs_error_file');
-		if (!file_exists($webLogsFile)) {
+		if ($webLogsFile === '' || $webLogsFile === '0' || !file_exists($webLogsFile)) {
+			return;
+		}
+
+		$extensionDir = $this->getConfiguration('extension_dir');
+		if ($extensionDir === '' || $extensionDir === '0') {
 			return;
 		}
 
 		$logs = file_get_contents($webLogsFile);
-		if (empty($logs)) {
+		if ($logs === '' || $logs === '0' || $logs === false) {
 			return;
 		}
 
 		file_put_contents($webLogsFile, '');
 
-		$extensionDir = $this->getConfiguration('extension_dir');
-
 		$logs = array_filter(explode("\n", $logs));
 		foreach ($logs as $log) {
-			if (\array_key_exists($log, static::$processedLogs)) {
+			if (\array_key_exists($log, self::$processedLogs)) {
 				continue;
 			}
 
 			// Do not process errors outside of the extension
 			if (!str_contains($log, '/' . basename($extensionDir) . '/')) {
-				static::$processedLogs[$log] = $log;
+				self::$processedLogs[$log] = $log;
 				continue;
 			}
 
 			$this->assertEmpty($log, $log);
-			static::$processedLogs[$log] = $log;
+			self::$processedLogs[$log] = $log;
 		}
 	}
 
-	public function searchForItem($name = null): void
+	public function searchForItem(?string $name = null): void
 	{
-		if ($name) {
+		if ($name !== null && $name !== '' && $name !== '0') {
 			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
 
@@ -340,18 +337,18 @@ class DPBrowser extends WebDriver
 
 	public function checkForJsErrors(): void
 	{
+		if (!$this->webDriver instanceof RemoteWebDriver) {
+			return;
+		}
+
 		try {
 			$logs = $this->webDriver->manage()->getLog('browser');
 		} catch (\Exception $exception) {
-			if (strpos($exception->getMessage(), 'HTTP method not allowed') !== -1) {
+			if (str_contains($exception->getMessage(), 'HTTP method not allowed')) {
 				return;
 			}
 
 			throw $exception;
-		}
-
-		if (!\is_array($logs)) {
-			return;
 		}
 
 		foreach ($logs as $log) {
