@@ -20,7 +20,14 @@ trait MenuTrait
 		$parts = parse_url($url);
 		parse_str($parts['query'], $query);
 
-		$component = $query['component'] ?? 'content';
+		$component = 'content';
+		if (!empty($query['component'])) {
+			$component = $query['component'];
+		}
+
+		if (!empty($query['option'])) {
+			$component = str_replace('com_', '', $query['option']);
+		}
 
 		$menuItem = [
 			'title'        => $title,
