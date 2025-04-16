@@ -23,16 +23,18 @@ trait TaskTrait
 			'state'           => 1,
 			'created'         => (new \DateTime())->format('Y-m-d H:i:s'),
 			'created_by'      => $this->grabFromDatabase('users', 'id', ['username' => 'admin']),
-			'params'          => ''
+			'params'          => []
 		];
 
 		if (\is_array($data)) {
 			$task = array_merge($task, $data);
 		}
 
-		if (!empty($task['params'])) {
-			$task['params'] = json_encode($task['params']);
+		if (empty($task['params']['notifications'])) {
+			$task['params']['notifications'] = ['success_mail' => 0, 'failure_mail' => 0, 'fatal_failure_mail' => 0, 'orphan_mail' => 0];
 		}
+
+		$task['params'] = json_encode($task['params']);
 
 		$task['id'] = $this->haveInDatabase('scheduler_tasks', $task);
 
