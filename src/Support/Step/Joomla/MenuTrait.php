@@ -21,11 +21,11 @@ trait MenuTrait
 		parse_str($parts['query'], $query);
 
 		$component = 'content';
-		if (!empty($query['component'])) {
+		if (isset($query['component']) && ($query['component'] !== [] && ($query['component'] !== '' && $query['component'] !== '0'))) {
 			$component = $query['component'];
 		}
 
-		if (!empty($query['option'])) {
+		if (isset($query['option']) && ($query['option'] !== '' && $query['option'] !== '0' && $query['option'] !== [])) {
 			$component = str_replace('com_', '', $query['option']);
 		}
 
