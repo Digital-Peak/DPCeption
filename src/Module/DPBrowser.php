@@ -324,6 +324,7 @@ class DPBrowser extends WebDriver
 		if ($name !== null && $name !== '' && $name !== '0') {
 			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
+			$this->waitForElement('.row0');
 
 			return;
 		}
