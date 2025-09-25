@@ -11,6 +11,6 @@ class TasksPage
 {
 	public static string $url = '/administrator/index.php?option=com_scheduler&view=tasks';
 
-	public static string $executeButtonClass = '#run-task-btn-wrapper button';
+	public static string $executeButtonClass = '#run-task-btn-wrapper button, #categoryList button';
 	public static string $completedMessage   = 'Status: Completed';
 }
