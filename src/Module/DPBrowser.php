@@ -31,14 +31,14 @@ class DPBrowser extends WebDriver
 
 	public function getConfiguration(?string $element = null, ?string $moduleName = null): string
 	{
-		$config = $moduleName !== null && $moduleName !== '' && $moduleName !== '0' ? $this->getModule($moduleName)->_getConfig() : $this->config;
+		$config = \in_array($moduleName, [null, '', '0'], true) ? $this->config : $this->getModule($moduleName)->_getConfig();
 
 		// When no module is given and the array key doesn't exist, fallback to the current module configuration
-		if ($element && ($moduleName === null || $moduleName === '' || $moduleName === '0') && !\array_key_exists($element, $config)) {
+		if ($element && (\in_array($moduleName, [null, '', '0'], true)) && !\array_key_exists($element, $config)) {
 			$moduleName = self::class;
 		}
 
-		return $element !== null && $element !== '' && $element !== '0' ? ($config[$element] ?? '') : $config;
+		return \in_array($element, [null, '', '0'], true) ? ($config) : $config[$element] ?? '';
 	}
 
 	public function setJoomlaGlobalConfigurationOption(string $oldValue, string $newValue): void
@@ -266,7 +266,7 @@ class DPBrowser extends WebDriver
 
 	public function checkForPhpNoticesOrWarnings(?string $page = null): void
 	{
-		if ($page !== null && $page !== '' && $page !== '0') {
+		if (!\in_array($page, [null, '', '0'], true)) {
 			$this->amOnPage($page);
 		}
 
@@ -296,7 +296,7 @@ class DPBrowser extends WebDriver
 		}
 
 		$logs = file_get_contents($webLogsFile);
-		if ($logs === '' || $logs === '0' || $logs === false) {
+		if (\in_array($logs, ['', '0', false], true)) {
 			return;
 		}
 
@@ -321,7 +321,7 @@ class DPBrowser extends WebDriver
 
 	public function searchForItem(?string $name = null): void
 	{
-		if ($name !== null && $name !== '' && $name !== '0') {
+		if (!\in_array($name, [null, '', '0'], true)) {
 			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
 			$this->waitForElement('.row0');

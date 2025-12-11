@@ -25,7 +25,7 @@ trait MenuTrait
 			$component = $query['component'];
 		}
 
-		if (isset($query['option']) && ($query['option'] !== '' && $query['option'] !== '0' && $query['option'] !== [])) {
+		if (isset($query['option']) && (!\in_array($query['option'], ['', '0', []], true))) {
 			$component = str_replace('com_', '', $query['option']);
 		}
 

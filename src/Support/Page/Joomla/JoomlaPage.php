@@ -10,7 +10,10 @@ namespace DigitalPeak\Support\Page\Joomla;
 class JoomlaPage
 {
 	public static string $systemMessageContainer = '#system-message-container .alert-message';
+
 	public static string $globalExceptionMessage = 'An error has occurred.';
-	public static string $userDefaultUserName    = 'admin';
-	public static string $userDefaultName        = 'Admin';
+
+	public static string $userDefaultUserName = 'admin';
+
+	public static string $userDefaultName = 'Admin';
 }

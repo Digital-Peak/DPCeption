@@ -18,8 +18,10 @@ use PHPUnit\Framework\SelfDescribing;
 class Reporter extends Console implements ConsolePrinter
 {
 	private int $counter = 0;
-	private int $total   = 0;
-	private int $memory  = 0;
+
+	private int $total = 0;
+
+	private int $memory = 0;
 
 	public function __construct()
 	{
@@ -79,6 +81,6 @@ class Reporter extends Console implements ConsolePrinter
 	private function size(int $size): string
 	{
 		$unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
-		return @round($size / 1024 ** $i = floor(log($size, 1024)), 2) . $unit[$i];
+		return @round($size / 1024 ** $i = floor(log($size, 1024)), 2) . $unit[(int)round($i)];
 	}
 }
