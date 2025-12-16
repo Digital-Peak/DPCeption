@@ -18,10 +18,13 @@ trait MenuTrait
 		$I = $this;
 
 		$parts = parse_url($url);
+		if (empty($parts['query'])) {
+			$parts['query'] = '';
+		}
 		parse_str($parts['query'], $query);
 
 		$component = 'content';
-		if (isset($query['component']) && ($query['component'] !== [] && ($query['component'] !== '' && $query['component'] !== '0'))) {
+		if (isset($query['component']) && $query['component'] !== [] && $query['component'] !== '' && $query['component'] !== '0') {
 			$component = $query['component'];
 		}
 
@@ -29,12 +32,18 @@ trait MenuTrait
 			$component = str_replace('com_', '', $query['option']);
 		}
 
+		$type = 'component';
+		if (!empty($params['type'])) {
+			$type = $params['type'];
+			unset($params['type']);
+		}
+
 		$menuItem = [
 			'title'        => $title,
 			'alias'        => strtolower(str_replace(' ', '-', $title)),
 			'published'    => 1,
 			'menutype'     => 'mainmenu',
-			'type'         => 'component',
+			'type'         => $type,
 			'link'         => $url,
 			'params'       => json_encode($params),
 			'language'     => '*',
