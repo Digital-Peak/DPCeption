@@ -80,7 +80,17 @@ class Reporter extends Console implements ConsolePrinter
 
 	private function size(int $size): string
 	{
+		$log = log($size, 1024);
+		if ($log < 0) {
+			return '0b';
+		}
+
+		$i = floor($log);
+		if (is_nan($i) || is_infinite($i)) {
+			$i = 0;
+		}
+
 		$unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
-		return @round($size / 1024 ** $i = floor(log($size, 1024)), 2) . $unit[(int)round($i)];
+		return @round($size / 1024 ** $i, 2) . $unit[(int)round($i)];
 	}
 }
