@@ -254,8 +254,7 @@ class DPBrowser extends WebDriver
 	{
 		$this->amOnPage('/index.php?option=com_users&view=login');
 		$this->click('Log out');
-		$this->amOnPage('/index.php?option=com_users&view=login');
-		$this->waitForElement('.login');
+		$this->waitForText('You have been logged out');
 
 		if (\is_null($user)) {
 			$user = $this->_getConfig('username');
@@ -324,7 +323,7 @@ class DPBrowser extends WebDriver
 		if (!\in_array($name, [null, '', '0'], true)) {
 			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
-			$this->waitForElement('.row0');
+			$this->waitForElementVisible('.row0');
 
 			return;
 		}
