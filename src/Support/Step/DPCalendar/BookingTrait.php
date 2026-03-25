@@ -25,7 +25,7 @@ trait BookingTrait
 			'city'       => 'Test City',
 			'zip'        => 'Test Zip',
 			'street'     => 'Test Street',
-			'number'     => 'Test Number',
+			'number'     => '9876',
 			'telephone'  => '123',
 			'latitude'   => 1,
 			'longitude'  => 1,

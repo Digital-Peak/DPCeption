@@ -77,7 +77,8 @@ class DPScreenshot extends Module
 		$screenshot = $root . $fileName . '.png';
 
 		// Change the driver instance
-		$this->takeFullScreenshot($driver, $screenshot);
+		$this->takeFullScreenshot($driver, $screenshot, $dimensions['scroll'] ?? true);
+		unset($dimensions['scroll']);
 
 		if (!file_exists($screenshot)) {
 			throw new \Exception('Could not save screenshot');
@@ -123,7 +124,7 @@ class DPScreenshot extends Module
 		return $element_screenshot;
 	}
 
-	private function takeFullScreenshot(DPBrowser $driver, string $screenshot_name): void
+	private function takeFullScreenshot(DPBrowser $driver, string $screenshot_name, bool $scroll): void
 	{
 		$total_width     = $driver->executeJS('return Math.max.apply(null, [document.body.clientWidth, document.body.scrollWidth, document.documentElement.scrollWidth, document.documentElement.clientWidth])');
 		$total_height    = $driver->executeJS('return Math.max.apply(null, [document.body.clientHeight, document.body.scrollHeight, document.documentElement.scrollHeight, document.documentElement.clientHeight])');
@@ -133,8 +134,8 @@ class DPScreenshot extends Module
 		$driver->wait(0.8);
 
 		$full_capture = imagecreatetruecolor($total_width, $total_height);
-		$repeat_x     = ceil($total_width / $viewport_width);
-		$repeat_y     = ceil($total_height / $viewport_height);
+		$repeat_x     = $scroll ? ceil($total_width / $viewport_width) : 1;
+		$repeat_y     = $scroll ? ceil($total_height / $viewport_height) : 1;
 		for ($x = 0; $x < $repeat_x; $x++) {
 			$x_pos      = $x * $viewport_width;
 			$before_top = -1;
@@ -164,7 +165,6 @@ class DPScreenshot extends Module
 			}
 		}
 		imagepng($full_capture, $screenshot_name);
-		imagedestroy($full_capture);
 
 		$driver->executeJS('window.scrollTo(0, 0)');
 	}
