@@ -104,6 +104,23 @@ class DPBrowser extends WebDriver
 		}
 	}
 
+	public function reloadPage(): void
+	{
+		$this->prepareForReload();
+		parent::reloadPage();
+		$this->waitForReload();
+	}
+
+	public function prepareForReload(): void
+	{
+		$this->waitForJS('return document.dpBrowserInitialPage = "yes"');
+	}
+
+	public function waitForReload(): void
+	{
+		$this->waitForJS('return document.dpBrowserInitialPage !== "yes"');
+	}
+
 	public function deleteAllCookies(): void
 	{
 		$this->executeInSelenium(fn (RemoteWebDriver $webdriver) => $webdriver->manage()->deleteAllCookies());
