@@ -10,6 +10,7 @@ namespace DigitalPeak\Module;
 use Codeception\Exception\ModuleException;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\NoSuchAlertException;
+use Facebook\WebDriver\Exception\UnknownErrorException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverKeys;
 
@@ -411,6 +412,15 @@ class DPBrowser extends WebDriver
 
 	public function waitForText(string $text, int $timeout = -1, $selector = null): void
 	{
-		parent::waitForText($text, $timeout === -1 ? $this->_getConfig('timeout') : $timeout, $selector);
+		for ($i = 0; $i < 3; $i++) {
+			try {
+				parent::waitForText($text, $timeout === -1 ? $this->_getConfig('timeout') : $timeout, $selector);
+				return;
+			} catch (UnknownErrorException) {
+				// Can happen when Joomla system message loads that the following error is thrown:
+				// Code -3200: Node with given id does not belong to the document
+				sleep(1);
+			}
+		}
 	}
 }
