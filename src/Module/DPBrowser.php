@@ -112,16 +112,6 @@ class DPBrowser extends WebDriver
 		$this->waitForReload();
 	}
 
-	public function prepareForReload(): void
-	{
-		$this->waitForJS('return document.dpBrowserInitialPage = "yes"');
-	}
-
-	public function waitForReload(): void
-	{
-		$this->waitForJS('return document.dpBrowserInitialPage !== "yes"');
-	}
-
 	public function deleteAllCookies(): void
 	{
 		$this->executeInSelenium(fn (RemoteWebDriver $webdriver) => $webdriver->manage()->deleteAllCookies());
@@ -383,6 +373,16 @@ class DPBrowser extends WebDriver
 
 			$this->assertNotEquals('SEVERE', $log['level'], 'Some error in JavaScript: ' . json_encode($log));
 		}
+	}
+
+	public function prepareForReload(): void
+	{
+		$this->waitForJS('return document.dpBrowserInitialPage = "yes"');
+	}
+
+	public function waitForReload(int $timeout = -1): void
+	{
+		$this->waitForJS('return document.dpBrowserInitialPage !== "yes"', $timeout === -1 ? $this->_getConfig('timeout') : $timeout);
 	}
 
 	public function waitForElementChange($element, \Closure $callback, int $timeout = -1): void
