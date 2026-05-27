@@ -328,15 +328,17 @@ class DPBrowser extends WebDriver
 
 	public function searchForItem(?string $name = null): void
 	{
+		$this->prepareForReload();
 		if (!\in_array($name, [null, '', '0'], true)) {
 			$this->fillField('#filter_search', $name);
 			$this->click(['xpath' => "//button[@aria-label='Search']"]);
-			$this->waitForElementVisible('.row0');
+			$this->waitForReload();
 
 			return;
 		}
 
 		$this->click('Clear', ['xpath' => "//button[@type='button']"]);
+		$this->waitForReload();
 	}
 
 	public function checkForJsErrors(): void
