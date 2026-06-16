@@ -39,6 +39,7 @@ trait EventTrait
 			foreach ($event['prices'] as $key => $price) {
 				$price['label'] ??= '';
 				$price['description'] ??= '';
+				$price['limit'] ??= '';
 				$price['currency'] ??= 'EUR';
 				$event['prices']['prices' . $key] = $price;
 				unset($event['prices'][$key]);
