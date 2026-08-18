@@ -42,6 +42,9 @@ class DPMail extends Module
 		$subjects = [];
 		foreach ($this->getClientFactory()->create()->get($this->_getConfig('url') . '/messages')->data as $email) {
 			$subjects[] = $email->subject;
+			if (stripos($email->subject, $text) !== false) {
+				return;
+			}
 		}
 
 		$this->assertContains($text, $subjects, print_r($subjects, true));

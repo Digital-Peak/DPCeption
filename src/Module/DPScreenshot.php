@@ -13,6 +13,15 @@ class DPScreenshot extends Module
 {
 	protected array $requiredFields = ['screenshot_dir'];
 
+	/**
+	 * Makes a screenshot of the given selector and saves it to the given file name. The file name is relative to the screenshot directory
+	 * defined in the configuration. The picture size can be defined as an array with the following values:
+	 * 0: Width of the picture
+	 * 1: Height of the picture
+	 * 2: X coordinate of the upper left corner of the picture (optional, default is 0)
+	 * 3: Y coordinate of the upper left corner of the picture (optional, default is 0)
+	 * scroll: Whether to scroll the page to capture the full page (optional, default is true)
+	 */
 	public function makeScreenshot(string $fileName, string $selector, ?array $pictureSize, mixed $windowSize = false): string
 	{
 		/** @var DPBrowser $browser */
