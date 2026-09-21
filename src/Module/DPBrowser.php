@@ -142,6 +142,7 @@ class DPBrowser extends WebDriver
 		// Wait is needed here as on J4 buttons work after a certain time
 		$this->scrollTo($button);
 		$this->wait(0.7);
+		$this->waitForElementClickable($button);
 		$this->click($button);
 		$this->waitForJs('return document.readyState == "complete"', 10);
 		$this->wait(0.5);
