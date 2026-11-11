@@ -47,6 +47,48 @@ class DPFile extends Module
 		$this->assertStringNotContainsString($content, file_get_contents($this->getFileDirectory($fileName)) ?: '');
 	}
 
+	public function hasInSpreadsheet(string $fileName, string $content): void
+	{
+		$this->seeFileExists($fileName);
+
+		$this->assertStringContainsString($content, $this->getSpreadsheetContent($this->getFileDirectory($fileName)));
+	}
+
+	public function hasNotInSpreadsheet(string $fileName, string $content): void
+	{
+		$this->seeFileExists($fileName);
+
+		$this->assertStringNotContainsString($content, $this->getSpreadsheetContent($this->getFileDirectory($fileName)));
+	}
+
+	/**
+	 * Returns the text of all cells of an xlsx file, one cell per line.
+	 */
+	private function getSpreadsheetContent(string $path): string
+	{
+		$zip = new \ZipArchive();
+		$this->assertTrue($zip->open($path) === true, 'Could not open spreadsheet file ' . $path);
+
+		$texts = [];
+		for ($i = 0; $i < $zip->numFiles; $i++) {
+			$name = (string)$zip->getNameIndex($i);
+
+			// Shared strings and worksheets (for inline strings and numbers)
+			if ($name !== 'xl/sharedStrings.xml' && !str_starts_with($name, 'xl/worksheets/')) {
+				continue;
+			}
+
+			preg_match_all('/<(?:t|v)(?:\s[^>]*)?>(.*?)<\/(?:t|v)>/s', (string)$zip->getFromIndex($i), $matches);
+			foreach ($matches[1] as $text) {
+				$texts[] = html_entity_decode($text, ENT_QUOTES | ENT_XML1, 'UTF-8');
+			}
+		}
+
+		$zip->close();
+
+		return implode("\n", $texts);
+	}
+
 	private function getFileDirectory(string $fileName): string
 	{
 		$files = glob($this->_getConfig('files_root') . '/' . $fileName);
